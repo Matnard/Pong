@@ -1,13 +1,11 @@
 Pong
 ====
 
-pong game in javascript.
-
 Goals: 
-- [ ]clean JS
-- [ ]Use the state pattern
-- [ ]render with DOM elements
-- [ ]render in a 2D Canvas
-- [ ]render in webGL just extruding the elements
-- [ ]IA
+- clean JS
+- Use the state pattern
+- render with DOM elements
+- render in a 2D Canvas
+- render in webGL just extruding the elements
+- IA
 
