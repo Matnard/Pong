@@ -1,5 +1,6 @@
 PONG.Scene = function(){
     PONG.Rect.apply(this, arguments);
+    this.y = 13;
     this.width = 600;
     this.height = 420;
     this.color = "#5856D6";

@@ -29,7 +29,7 @@ module.exports = function (grunt) {
         watch: {
             js: {
                 files: ['<%= yeoman.app %>/scripts/{,*/}*.js'],
-                tasks: ['jshint'],
+                //tasks: ['jshint'],
                 options: {
                     livereload: true
                 }
@@ -335,15 +335,15 @@ module.exports = function (grunt) {
         // Run some tasks in parallel to speed up build process
         concurrent: {
             server: [
-                'compass:server',
-                'copy:styles'
+                //'compass:server',
+                //'copy:styles'
             ],
             test: [
-                'copy:styles'
+                //'copy:styles'
             ],
             dist: [
-                'compass',
-                'copy:styles',
+                //'compass',
+                //'copy:styles',
                 'imagemin',
                 'svgmin'
             ]
@@ -401,7 +401,7 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('default', [
-        'newer:jshint',
+        //'newer:jshint',
         'test',
         'build'
     ]);
