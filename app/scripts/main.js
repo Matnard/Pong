@@ -1,3 +1,4 @@
+
 PONG.main = function (){
     
     var scene,
@@ -40,6 +41,7 @@ PONG.main = function (){
         resetPositions();
         
         PONG.renderer = PONG.DomRenderer;
+        //PONG.renderer = PONG.CanvasRenderer;
         requestAnimationFrame(onEnterFrame);
     }();
        
