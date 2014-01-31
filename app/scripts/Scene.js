@@ -1,8 +1,8 @@
 PONG.Scene = function(){
     PONG.Rect.apply(this, arguments);
     this.y = 13;
-    this.width = PONG.stageWidth;
-    this.height = PONG.stageHeight;
+    this.width = 600;
+    this.height = 420;
     this.color = "#5856D6";
     this.type = "Scene";
 };
