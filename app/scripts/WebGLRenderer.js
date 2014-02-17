@@ -1,12 +1,12 @@
-PONG.CanvasRenderer = function(){
+PONG.WebGLRenderer = function(){
     var body = document.body,
     stage,
     ctx,
     init = function () {
         stage = document.createElement("canvas");
-        stage.setAttribute("width", PONG.stageWidth+"px");
-        stage.setAttribute("height", PONG.stageHeight+"px");
-        ctx = stage.getContext("2d");
+        stage.setAttribute("width", window.innerWidth+"px");
+        stage.setAttribute("height", window.innerHeight+"px");
+        ctx = stage.getContext("experimental-webgl");
         console.log(ctx);
         body.appendChild(stage);
     }(),

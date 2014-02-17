@@ -30,4 +30,4 @@ PONG.DomRenderer = function(){
       drawRect: drawRect,
       render: render
     };
-}();
+};
