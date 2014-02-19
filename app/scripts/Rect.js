@@ -1,9 +1,15 @@
-PONG.Rect = function(x, y, width, height, color){
+PONG.Rect = function(x, y, width, height, color, rgba){
     this._x = x || 0;
     this._y = y || 0;
     this._width = width || 0;
     this._height = height || 0;
     this._color = color || "#FFFFFF";
+    this._rgba = rgba || {
+        r: 255,
+        g: 255,
+        b: 255,
+        a: 255
+    };
     this.type = "Rect";
 };
 
@@ -49,5 +55,14 @@ Object.defineProperty(PONG.Rect.prototype, 'color', {
     },
     set: function(value) {
         this._color = value;
+    }
+});
+
+Object.defineProperty(PONG.Rect.prototype, 'rgba', {
+    get: function() {
+        return this._rgba;
+    },
+    set: function(value) {
+        this._rgba = value;
     }
 });

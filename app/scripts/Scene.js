@@ -4,6 +4,12 @@ PONG.Scene = function(){
     this.width = 600;
     this.height = 420;
     this.color = "#5856D6";
+    this.rgba = {
+        r: 88,
+        g: 86,
+        b: 214,
+        a: 255
+    };
     this.type = "Scene";
 };
 

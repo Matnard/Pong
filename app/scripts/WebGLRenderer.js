@@ -1,26 +1,123 @@
 PONG.WebGLRenderer = function(){
-    var body = document.body,
-    stage,
-    ctx,
+    var stage,
+    gl,
+    vertexShader,
+    fragmentShader,
+    program,
+    positionLocation,
+    colorLocation,
+    resolutionLocation,
+    buffer,
+
+    getShader = function(gl, id) {
+        var shaderScript = document.getElementById(id);
+        if (!shaderScript) {
+            return null;
+        }
+    
+        var str = "";
+        var k = shaderScript.firstChild;
+        while (k) {
+            if (k.nodeType == 3) {
+                str += k.textContent;
+            }
+            k = k.nextSibling;
+        }
+    
+        var shader;
+        if (shaderScript.type == "x-shader/x-fragment") {
+            shader = gl.createShader(gl.FRAGMENT_SHADER);
+        } else if (shaderScript.type == "x-shader/x-vertex") {
+            shader = gl.createShader(gl.VERTEX_SHADER);
+        } else {
+            return null;
+        }
+    
+        gl.shaderSource(shader, str);
+        gl.compileShader(shader);
+    
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+            alert(gl.getShaderInfoLog(shader));
+            return null;
+        }
+    
+        return shader;
+    }, 
+    
     init = function () {
         stage = document.createElement("canvas");
+        //stage.setAttribute("width", PONG.stageWidth+"px");
+        //stage.setAttribute("height", PONG.stageHeight+"px");
         stage.setAttribute("width", window.innerWidth+"px");
         stage.setAttribute("height", window.innerHeight+"px");
-        ctx = stage.getContext("experimental-webgl");
-        console.log(ctx);
-        body.appendChild(stage);
+        
+        document.body.appendChild(stage);
+        
+        try {
+            gl = stage.getContext("experimental-webgl");
+        } catch (e) {
+        }
+        if (!gl) {
+            alert("Could not initialise WebGL, sorry :-(");
+            return false;
+        }
+        
+        gl.viewportWidth = stage.width;
+        gl.viewportHeight = stage.height;
+        
+        vertexShader = getShader(gl, "shader-vs");
+        fragmentShader = getShader(gl, "shader-fs");
+        program = gl.createProgram();
+        gl.attachShader(program, vertexShader);
+        gl.attachShader(program, fragmentShader);
+        gl.linkProgram(program);
+    
+        if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+            alert("Could not initialise shaders");
+        }
+    
+        gl.useProgram(program);
+        
+        // look up where the vertex data needs to go.
+        positionLocation = gl.getAttribLocation(program, "a_position");
+        colorLocation = gl.getUniformLocation(program, "u_color");
+        resolutionLocation = gl.getUniformLocation(program, "u_resolution");
+        gl.uniform2f(resolutionLocation, stage.width, stage.height);
+    
+        // Create a buffer
+        buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+        gl.enableVertexAttribArray(positionLocation);
+        gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+        
+        
+        
     }(),
-    drawRect = function(rect) {
-        var shape;
-        ctx.fillStyle = rect.color;
-        shape = ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
-        return shape;
+    drawRect = function(gl, rect) {
+      var x1 = rect.x;
+      var x2 = rect.x + rect.width;
+      var y1 = rect.y;
+      var y2 = rect.y + rect.height;
+      //debugger;
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+         x1, y1,
+         x2, y1,
+         x1, y2,
+         x1, y2,
+         x2, y1,
+         x2, y2]), gl.STATIC_DRAW);
+      //console.log(rect.rgba.r/255, rect.rgba.g/255, rect.rgba.b/255)  ;
+      //gl.uniform4f(colorLocation, Math.random(), Math.random(), Math.random(), 1);
+      gl.uniform4f(colorLocation, rect.rgba.r/255, rect.rgba.g/255, rect.rgba.b/255, 1);
+    
+      // Draw the rectangle.
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
     },
     render = function () {
         //clear
-        ctx.clearRect ( 0 , 0 , PONG.stageWidth , PONG.stageHeight );
+        //ctx.clearRect ( 0 , 0 , PONG.stageWidth , PONG.stageHeight );
         for(var i=0; i<PONG.displayList.length; i++){
-            drawRect(PONG.displayList[i]);
+            drawRect(gl, PONG.displayList[i]);
         }
     };
     

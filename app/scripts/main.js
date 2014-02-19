@@ -415,12 +415,17 @@ PONG.main = function (){
             game.start();
             
             //PONG.renderer = PONG.DomRenderer();
-            PONG.renderer = PONG.CanvasRenderer();
-            //PONG.renderer = PONG.WebGLRenderer();
+            //PONG.renderer = PONG.CanvasRenderer();
+            PONG.renderer = PONG.WebGLRenderer();
             requestAnimationFrame(onEnterFrame);
-        }();
+        };
+        
+    document.addEventListener('DOMContentLoaded', function(){
+        init();
+    });
     
     return {
+        init: init,
         start: start,
         die: die,
         startOver: startOver
