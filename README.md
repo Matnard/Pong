@@ -3,12 +3,11 @@ Pong
 
 Goals: 
 
+- [x] Keep the code in a namespace
 - [x] Use the state pattern to switch among screens
 - [x] Render with DOM elements
 - [x] Render in a 2D Canvas
-- [ ] ~~Render in webGL just extruding the elements~~
-- [ ] Render in webGL by drawing triangles
-- [ ] Render in webGL in 3d using a 3d library (babylon.js or threejs)
-- [ ] IA
-- [ ] Write JS as clean as possible
-
+- [x] Render in webGL by drawing triangles
+- [ ] Upload the geometry and do the translation in the shader
+- [ ] Render in webGL in 3D
+- [ ] Better IA than Math.sin()
