@@ -2,7 +2,7 @@ PONG.Ball = function(){
     PONG.Rect.apply(this, arguments);
     this.width = 13;
     this.height = 13;
-    this.type = "Ball";
+    this.type = PONG.types.BALL;
     this.speed = {
         x: -3,
         y: -2

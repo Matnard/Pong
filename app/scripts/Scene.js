@@ -10,7 +10,7 @@ PONG.Scene = function(){
         b: 214,
         a: 255
     };
-    this.type = "Scene";
+    this.type = PONG.types.SCENE;
 };
 
 PONG.Scene.prototype = Object.create( PONG.Rect.prototype );

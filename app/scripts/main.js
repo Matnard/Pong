@@ -308,9 +308,7 @@ PONG.main = function (){
             }
         },
     
-        onEnterFrame = function() {
-            var amplitude;
-           
+        onEnterFrame = function() {           
             if(PONG.currentScreen == PONG.screens.GAME_SCREEN)
                 updateGame();
         

@@ -8,6 +8,16 @@ PONG.WebGLRenderer = function(){
     colorLocation,
     resolutionLocation,
     buffer,
+    buffers = {
+        topBound: {},
+        bottomBound: {},
+        scene: {},
+        pongTitle: {},
+        ball: {},
+        paddle1: {},
+        paddle2: {},
+        gameOverTitle: {}        
+    }
 
     getShader = function(gl, id) {
         var shaderScript = document.getElementById(id);
@@ -98,7 +108,7 @@ PONG.WebGLRenderer = function(){
       var x2 = rect.x + rect.width;
       var y1 = rect.y;
       var y2 = rect.y + rect.height;
-      //debugger;
+      
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
          x1, y1,
          x2, y1,
@@ -106,18 +116,24 @@ PONG.WebGLRenderer = function(){
          x1, y2,
          x2, y1,
          x2, y2]), gl.STATIC_DRAW);
-      //console.log(rect.rgba.r/255, rect.rgba.g/255, rect.rgba.b/255)  ;
-      //gl.uniform4f(colorLocation, Math.random(), Math.random(), Math.random(), 1);
       gl.uniform4f(colorLocation, rect.rgba.r/255, rect.rgba.g/255, rect.rgba.b/255, 1);
     
       // Draw the rectangle.
       gl.drawArrays(gl.TRIANGLES, 0, 6);
     },
     render = function () {
+        
+        /*
+        //TODO:        
+        switch MODE
+        init buffers
+        check Tx and Ty in the loop
+        */
+        
         //clear
-        //ctx.clearRect ( 0 , 0 , PONG.stageWidth , PONG.stageHeight );
+        gl.clear(gl.COLOR_BUFFER_BIT);
         for(var i=0; i<PONG.displayList.length; i++){
-            drawRect(gl, PONG.displayList[i]);
+            //drawRect(gl, PONG.displayList[i]);
         }
     };
     

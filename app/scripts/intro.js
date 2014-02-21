@@ -14,6 +14,16 @@ PONG.event = {
     START_OVER: "START_OVER"
 };
 
+PONG.types = {
+  RECT: "RECT",
+  SCENE: "SCENE",
+  BALL: "BALL",
+  BOUND: "BOUND",
+  PADDLE: "PADDLE",
+  INTRO_TITLE: "INTRO_TITLE",
+  GAME_OVER_TITLE: "GAME_OVER_TITLE"
+};
+
 
 PONG.stageWidth = 600;
 PONG.stageHeight = 446;
