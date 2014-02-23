@@ -1,10 +1,9 @@
 PONG.Rect = function(x, y, width, height, color, rgba){
     this._x = x || 0;
     this._y = y || 0;
-    this._Tx = 0;
-    this._Ty = 0;
     this._width = width || 0;
     this._height = height || 0;
+    //TODO: parse # or rgba() get a string
     this._color = color || "#FFFFFF";
     this._rgba = rgba || {
         r: 255,
@@ -30,24 +29,6 @@ Object.defineProperty(PONG.Rect.prototype, 'y', {
     },
     set: function(value) {
         this._y = value;
-    }
-});
-
-Object.defineProperty(PONG.Rect.prototype, 'Tx', {
-    get: function() {
-        return this._Tx;
-    },
-    set: function(value) {
-        this._Tx = value;
-    }
-});
-
-Object.defineProperty(PONG.Rect.prototype, 'Ty', {
-    get: function() {
-        return this._Ty;
-    },
-    set: function(value) {
-        this._Ty = value;
     }
 });
 

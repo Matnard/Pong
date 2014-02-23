@@ -3,7 +3,7 @@ PONG.instruction = function () {
     
     display = function(message){
         console.log(info);
-        info.innerHTML = message;
+        //info.innerHTML = message;
     };
     
     return {
@@ -34,36 +34,7 @@ PONG.IntroScreen = function(game) {
   var that = this,
   offsetX = 140,
   offsetY = 150,
-  title = [
-    //P
-    new PONG.Rect(0, 0, 23, 71, "#FFFFFF"), 
-    new PONG.Rect(23, 0, 38, 13, "#FFFFFF"),
-    new PONG.Rect(23, 39, 38, 13, "#FFFFFF"), 
-    new PONG.Rect(49, 10, 22, 32, "#FFFFFF"),
-    
-    //O
-    new PONG.Rect(78, 10, 23, 51, "#FFFFFF"), 
-    new PONG.Rect(127, 10, 23, 51, "#FFFFFF"),
-    new PONG.Rect(88, 0, 51, 13, "#FFFFFF"), 
-    new PONG.Rect(88, 58, 51, 13, "#FFFFFF"),
-    
-    //N
-    new PONG.Rect(156, 0, 23, 71, "#FFFFFF"), 
-    new PONG.Rect(205, 0, 23, 71, "#FFFFFF"),
-    new PONG.Rect(179, 10, 9, 32, "#FFFFFF"), 
-    new PONG.Rect(185, 20, 13, 32, "#FFFFFF"),
-    new PONG.Rect(195,29,10,32, "#FFFFFF"),
-    
-    //G
-    new PONG.Rect(234,20,10,32, "#FFFFFF"),
-    new PONG.Rect(244,10,13,51, "#FFFFFF"),
-    new PONG.Rect(254,0,12,23, "#FFFFFF"),
-    new PONG.Rect(266,0,39,13, "#FFFFFF"),
-    new PONG.Rect(254,49,12,22, "#FFFFFF"),
-    new PONG.Rect(266,58,39,13, "#FFFFFF"),
-    new PONG.Rect(283,45,22,13, "#FFFFFF"),
-    new PONG.Rect(273,32,32,13, "#FFFFFF")
-    ];
+  title = PONG.titles.INTRO;
   //texture = "";
   
   //offset
@@ -111,66 +82,7 @@ PONG.GameOverScreen = function(game) {
   var that = this,
   offsetX = 90,
   offsetY = 150,
-  title = [
-    //G
-    new PONG.Rect(0,12,14,19, "#FFFFFF"), 
-    new PONG.Rect(6,6,14,7, "#FFFFFF"),
-    new PONG.Rect(12,0,32,7, "#FFFFFF"), 
-    new PONG.Rect(6,30,14,7, "#FFFFFF"),
-    new PONG.Rect(12,36,32,7, "#FFFFFF"),
-    new PONG.Rect(30,25,14,11, "#FFFFFF"),
-    new PONG.Rect(24,18,20,7, "#FFFFFF"),
-
-    //A
-    new PONG.Rect(48,12,14,31, "#FFFFFF"),
-    new PONG.Rect(78,12,14,31, "#FFFFFF"),
-    new PONG.Rect(54,6,14,7, "#FFFFFF"),
-    new PONG.Rect(72,6,14,7, "#FFFFFF"),
-    new PONG.Rect(60,0,20,7, "#FFFFFF"),
-    new PONG.Rect(61,24,18,7, "#FFFFFF"),
-
-    //M
-    new PONG.Rect(96,0,14,43, "#FFFFFF"),
-    new PONG.Rect(126,0,14,43, "#FFFFFF"),
-    new PONG.Rect(110,6,6,19, "#FFFFFF"),
-    new PONG.Rect(120,6,6,19, "#FFFFFF"),
-    new PONG.Rect(114,12,8,19  , "#FFFFFF"),
-   
-    //E
-    new PONG.Rect(144,0,14,43, "#FFFFFF"),
-    new PONG.Rect(158,0,30,7, "#FFFFFF"),
-    new PONG.Rect(158,18,24,7, "#FFFFFF"),
-    new PONG.Rect(158,36,30,7 , "#FFFFFF"),
-   
-    //O
-    new PONG.Rect(240,6,14,31, "#FFFFFF"),
-    new PONG.Rect(270,6,14,31, "#FFFFFF"),
-    new PONG.Rect(246,0,32,7, "#FFFFFF"),
-    new PONG.Rect(246,36,32,7, "#FFFFFF"),
-    
-    //V
-    new PONG.Rect(288,0,14,25 , "#FFFFFF"),
-    new PONG.Rect(318,0,14,25, "#FFFFFF"), 
-    new PONG.Rect(306,24,8,19, "#FFFFFF"),
-    new PONG.Rect(294,18,14,13, "#FFFFFF"),
-    new PONG.Rect(312,18,14,13, "#FFFFFF"),
-    new PONG.Rect(300,31,20,6, "#FFFFFF"),  
-    
-    //E
-    new PONG.Rect(336,0,44,7, "#FFFFFF"),
-    new PONG.Rect(336,36,44,7, "#FFFFFF"),
-    new PONG.Rect(336,7,14,29, "#FFFFFF"),
-    new PONG.Rect(350,18,24,7, "#FFFFFF"),
-    
-    //R
-    new PONG.Rect(384,0,14,43, "#FFFFFF"),
-    new PONG.Rect(398,0,24,7, "#FFFFFF"),
-    new PONG.Rect(414,6,14,19, "#FFFFFF"),
-    new PONG.Rect(408,18,6,6, "#FFFFFF"),
-    new PONG.Rect(398,24,18,7, "#FFFFFF"),
-    new PONG.Rect(402,30,20,7, "#FFFFFF"),
-    new PONG.Rect(408,36,20,7, "#FFFFFF")  
-  ];
+  title = PONG.titles.GAME_OVER;
   
   //offset
   for(var i=0,j=title.length; i<j; i++){
@@ -232,7 +144,7 @@ PONG.main = function (){
                 player = player2;
             
             
-            if( ball.y > (player.y + player.height) || (ball.y+ball.height) < player.y )
+            if( ball.y > (player.y + player.height) || (ball.y + ball.height) < player.y )
                 return WALL;
             else
                 return PADDLE;
@@ -330,7 +242,6 @@ PONG.main = function (){
         },
        
         printScore = function(){
-
             PONG.instruction.display(score.player1+" - "+score.player2);
         },
         
@@ -360,15 +271,109 @@ PONG.main = function (){
         
         init = function () {
             
+            //TODO: move in a separate file
+            PONG.titles.INTRO = [
+                //P
+                new PONG.Rect(0, 0, 23, 71, "#FFFFFF"), 
+                new PONG.Rect(23, 0, 38, 13, "#FFFFFF"),
+                new PONG.Rect(23, 39, 38, 13, "#FFFFFF"), 
+                new PONG.Rect(49, 10, 22, 32, "#FFFFFF"),
+                
+                //O
+                new PONG.Rect(78, 10, 23, 51, "#FFFFFF"), 
+                new PONG.Rect(127, 10, 23, 51, "#FFFFFF"),
+                new PONG.Rect(88, 0, 51, 13, "#FFFFFF"), 
+                new PONG.Rect(88, 58, 51, 13, "#FFFFFF")//,
+                
+                //N
+                /*new PONG.Rect(156, 0, 23, 71, "#FFFFFF"), 
+                new PONG.Rect(205, 0, 23, 71, "#FFFFFF"),
+                new PONG.Rect(179, 10, 9, 32, "#FFFFFF"), 
+                new PONG.Rect(185, 20, 13, 32, "#FFFFFF"),
+                new PONG.Rect(195,29,10,32, "#FFFFFF"),
+                
+                //G
+                new PONG.Rect(234,20,10,32, "#FFFFFF"),
+                new PONG.Rect(244,10,13,51, "#FFFFFF"),
+                new PONG.Rect(254,0,12,23, "#FFFFFF"),
+                new PONG.Rect(266,0,39,13, "#FFFFFF"),
+                new PONG.Rect(254,49,12,22, "#FFFFFF"),
+                new PONG.Rect(266,58,39,13, "#FFFFFF"),
+                new PONG.Rect(283,45,22,13, "#FFFFFF"),
+                new PONG.Rect(273,32,32,13, "#FFFFFF")*/
+            ];
+
+            //TODO: move in a separate file
+            PONG.titles.GAME_OVER = [
+                //G
+                new PONG.Rect(0,12,14,19, "#FFFFFF"), 
+                new PONG.Rect(6,6,14,7, "#FFFFFF"),
+                new PONG.Rect(12,0,32,7, "#FFFFFF"), 
+                new PONG.Rect(6,30,14,7, "#FFFFFF"),
+                new PONG.Rect(12,36,32,7, "#FFFFFF"),
+                new PONG.Rect(30,25,14,11, "#FFFFFF"),
+                new PONG.Rect(24,18,20,7, "#FFFFFF"),
+            
+                //A
+                new PONG.Rect(48,12,14,31, "#FFFFFF"),
+                new PONG.Rect(78,12,14,31, "#FFFFFF"),
+                new PONG.Rect(54,6,14,7, "#FFFFFF"),
+                new PONG.Rect(72,6,14,7, "#FFFFFF"),
+                new PONG.Rect(60,0,20,7, "#FFFFFF"),
+                new PONG.Rect(61,24,18,7, "#FFFFFF"),
+            
+                //M
+                new PONG.Rect(96,0,14,43, "#FFFFFF"),
+                new PONG.Rect(126,0,14,43, "#FFFFFF"),
+                new PONG.Rect(110,6,6,19, "#FFFFFF"),
+                new PONG.Rect(120,6,6,19, "#FFFFFF"),
+                new PONG.Rect(114,12,8,19  , "#FFFFFF"),
+               
+                //E
+                new PONG.Rect(144,0,14,43, "#FFFFFF"),
+                new PONG.Rect(158,0,30,7, "#FFFFFF"),
+                new PONG.Rect(158,18,24,7, "#FFFFFF"),
+                new PONG.Rect(158,36,30,7 , "#FFFFFF"),
+               
+                //O
+                new PONG.Rect(240,6,14,31, "#FFFFFF"),
+                new PONG.Rect(270,6,14,31, "#FFFFFF"),
+                new PONG.Rect(246,0,32,7, "#FFFFFF"),
+                new PONG.Rect(246,36,32,7, "#FFFFFF"),
+                
+                //V
+                new PONG.Rect(288,0,14,25 , "#FFFFFF"),
+                new PONG.Rect(318,0,14,25, "#FFFFFF"), 
+                new PONG.Rect(306,24,8,19, "#FFFFFF"),
+                new PONG.Rect(294,18,14,13, "#FFFFFF"),
+                new PONG.Rect(312,18,14,13, "#FFFFFF"),
+                new PONG.Rect(300,31,20,6, "#FFFFFF"),  
+                
+                //E
+                new PONG.Rect(336,0,44,7, "#FFFFFF"),
+                new PONG.Rect(336,36,44,7, "#FFFFFF"),
+                new PONG.Rect(336,7,14,29, "#FFFFFF"),
+                new PONG.Rect(350,18,24,7, "#FFFFFF"),
+                
+                //R
+                new PONG.Rect(384,0,14,43, "#FFFFFF"),
+                new PONG.Rect(398,0,24,7, "#FFFFFF"),
+                new PONG.Rect(414,6,14,19, "#FFFFFF"),
+                new PONG.Rect(408,18,6,6, "#FFFFFF"),
+                new PONG.Rect(398,24,18,7, "#FFFFFF"),
+                new PONG.Rect(402,30,20,7, "#FFFFFF"),
+                new PONG.Rect(408,36,20,7, "#FFFFFF")   
+            ];
+          
             
             
             topBound = new PONG.Bound();
             bottomBound = new PONG.Bound();
             bottomBound.y = PONG.stageHeight - bottomBound.height;
-            scene = new PONG.Scene();
+            //scene = new PONG.Scene();
             PONG.backgroundList.push(scene);
-            PONG.backgroundList.push(topBound);
             PONG.backgroundList.push(bottomBound);
+            PONG.backgroundList.push(topBound);
             
             ball = new PONG.Ball();
             player1 = new PONG.Paddle();
@@ -386,10 +391,6 @@ PONG.main = function (){
             RIGHT_COLLISION_LINE = PONG.stageWidth - player2.width;
             MIDDLE_Y_POSITION = (PONG.stageHeight - player1.height)*0.5;
     
-            console.table(LEFT_COLLISION_LINE,
-            RIGHT_COLLISION_LINE,
-            MIDDLE_Y_POSITION);
-            
             
             document.onkeypress = function(e) {
                 e = e || window.event;

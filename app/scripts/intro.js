@@ -31,3 +31,9 @@ PONG.displayList = [];
 PONG.backgroundList = [];
 PONG.gameScreenList = [];
 
+PONG.titles = {
+    INTRO : [],
+    GAME_OVER: [] 
+};
+
+
