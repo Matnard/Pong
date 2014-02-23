@@ -2,7 +2,7 @@ PONG.instruction = function () {
     var info = document.getElementById('info'),
     
     display = function(message){
-        console.log(info);
+        console.log(message);
         //info.innerHTML = message;
     };
     
@@ -55,7 +55,6 @@ PONG.IntroScreen = function(game) {
       }
   };
    
-  //
   this.run = function () {
       PONG.instruction.display("press ENTER to play. Use W and S to move.");
       PONG.currentScreen = PONG.screens.INTRO_SCREEN;
@@ -283,10 +282,10 @@ PONG.main = function (){
                 new PONG.Rect(78, 10, 23, 51, "#FFFFFF"), 
                 new PONG.Rect(127, 10, 23, 51, "#FFFFFF"),
                 new PONG.Rect(88, 0, 51, 13, "#FFFFFF"), 
-                new PONG.Rect(88, 58, 51, 13, "#FFFFFF")//,
+                new PONG.Rect(88, 58, 51, 13, "#FFFFFF"),
                 
                 //N
-                /*new PONG.Rect(156, 0, 23, 71, "#FFFFFF"), 
+                new PONG.Rect(156, 0, 23, 71, "#FFFFFF"), 
                 new PONG.Rect(205, 0, 23, 71, "#FFFFFF"),
                 new PONG.Rect(179, 10, 9, 32, "#FFFFFF"), 
                 new PONG.Rect(185, 20, 13, 32, "#FFFFFF"),
@@ -300,7 +299,7 @@ PONG.main = function (){
                 new PONG.Rect(254,49,12,22, "#FFFFFF"),
                 new PONG.Rect(266,58,39,13, "#FFFFFF"),
                 new PONG.Rect(283,45,22,13, "#FFFFFF"),
-                new PONG.Rect(273,32,32,13, "#FFFFFF")*/
+                new PONG.Rect(273,32,32,13, "#FFFFFF")
             ];
 
             //TODO: move in a separate file
@@ -371,7 +370,7 @@ PONG.main = function (){
             bottomBound = new PONG.Bound();
             bottomBound.y = PONG.stageHeight - bottomBound.height;
             //scene = new PONG.Scene();
-            PONG.backgroundList.push(scene);
+            //PONG.backgroundList.push(scene);
             PONG.backgroundList.push(bottomBound);
             PONG.backgroundList.push(topBound);
             
@@ -429,6 +428,5 @@ PONG.main = function (){
         die: die,
         startOver: startOver
     };
-       
 }();
 

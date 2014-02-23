@@ -1,7 +1,18 @@
 PONG.WebGLRenderer = function() {
-    var stage, gl, vertexShader, fragmentShader, program, positionLocation, colorLocation, resolutionLocation, buffer, //TODO: remove
+    var stage, 
+    gl, 
+    vertexShader, 
+    fragmentShader, 
+    program, 
+    positionLocation, 
+    colorLocation, 
+    resolutionLocation, 
 
-    sceneEntities = [], gameEntities = [], introEntities = [], outroEntities = [], sceneBuffersInitialized = false;
+    sceneEntities = [], 
+    gameEntities = [], 
+    introEntities = [], 
+    outroEntities = [], 
+    sceneBuffersInitialized = false;
     introBuffersInitialized = false;
     gameBuffersInitialized = false;
     gameOverBuffersInitialized = false;
@@ -54,7 +65,6 @@ PONG.WebGLRenderer = function() {
         console.log("init scene buffers");
 
         for (var i = 0, j = PONG.backgroundList.length; i < j; i++) {
-            console.log(PONG.backgroundList[i]);
             var vertices;
 
             sceneEntities[i] = {
@@ -65,11 +75,8 @@ PONG.WebGLRenderer = function() {
             gl.bindBuffer(gl.ARRAY_BUFFER, sceneEntities[i].buffer);
 
             vertices = rectToVertices(PONG.backgroundList[i]);
-            //debugger;
             gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-            //debugger;
             sceneEntities[i].buffer.numItems = vertices.length * 0.5;
-            //debugger;
         };
         sceneBuffersInitialized = true;
     }, 
@@ -85,26 +92,51 @@ PONG.WebGLRenderer = function() {
         gl.bindBuffer(gl.ARRAY_BUFFER, introEntities[0].buffer);
 
         for (var i = 0, j = PONG.titles.INTRO.length; i < j; i++) {
-            console.log(PONG.titles.INTRO[i]);
             vertices = vertices.concat(rectToVertices(PONG.titles.INTRO[i]));
         };
         
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
         introEntities[0].buffer.numItems = vertices.length * 0.5;
-        
-        console.log(introEntities[0].buffer.numItems);
-        //debugger;
 
         introBuffersInitialized = true;
     }, 
     
     initGameBuffers = function() {
         console.log("init game buffers");
+        for (var i = 0, j = PONG.gameScreenList.length; i < j; i++) {
+            var vertices;
+
+            gameEntities[i] = {
+                buffer : gl.createBuffer(),
+                color : PONG.gameScreenList[i].rgba
+            };
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, gameEntities[i].buffer);
+
+            vertices = rectToVertices(PONG.gameScreenList[i]);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+            gameEntities[i].buffer.numItems = vertices.length * 0.5;
+        };
         gameBuffersInitialized = true;
     }, 
     
     initGameOverBuffers = function() {
         console.log("init game over buffers");
+        var vertices = [];
+        
+        outroEntities[0] = {
+            buffer : gl.createBuffer(),
+            color : PONG.titles.GAME_OVER[0].rgba
+        };
+        gl.bindBuffer(gl.ARRAY_BUFFER, outroEntities[0].buffer);
+
+        for (var i = 0, j = PONG.titles.GAME_OVER.length; i < j; i++) {
+            vertices = vertices.concat(rectToVertices(PONG.titles.GAME_OVER[i]));
+        };
+        
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+        outroEntities[0].buffer.numItems = vertices.length * 0.5;
+
         gameOverBuffersInitialized = true;
     }, 
     
@@ -148,33 +180,51 @@ PONG.WebGLRenderer = function() {
 
         // Create a buffer
 
-        /*
-        initSceneBuffers();
-                initIntroBuffers();
-                initGameBuffers();
-                initGameOverBuffers();*/
         
-
-        buffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-        gl.enableVertexAttribArray(positionLocation);
-        gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+        initSceneBuffers();
+        initIntroBuffers();
+        initGameBuffers();
+        initGameOverBuffers();
+       
     }(), 
     
     drawScene = function() {
         for(var i=0,j=sceneEntities.length; i<j; i++){
           var buffer = sceneEntities[i].buffer;
-          console.log(buffer);
           gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-          gl.drawArrays(gl.TRIANGLES, 0, 6);
-          //console.log(i, buffer.numItems);
+          gl.enableVertexAttribArray(positionLocation);
+          gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+          gl.uniform4f(colorLocation, 1,1,1,1);
+          gl.drawArrays(gl.TRIANGLES, 0, buffer.numItems);
         };
-        //debugger;
-        
     },
     
     drawIntro = function() {
-        
+        var buffer = introEntities[0].buffer;
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+        gl.enableVertexAttribArray(positionLocation);
+        gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+        gl.uniform4f(colorLocation, 1,1,1,1);
+        gl.drawArrays(gl.TRIANGLES, 0, buffer.numItems);
+    },
+    drawGame = function() {
+        for(var i=0,j=gameEntities.length; i<j; i++){
+          var buffer = gameEntities[i].buffer;
+          gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+          gl.enableVertexAttribArray(positionLocation);
+          gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+          gl.uniform4f(colorLocation, 1,1,1,1);
+          gl.drawArrays(gl.TRIANGLES, 0, buffer.numItems);
+        };
+    },
+    
+    drawOutro = function() {
+        var buffer = outroEntities[0].buffer;
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+        gl.enableVertexAttribArray(positionLocation);
+        gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+        gl.uniform4f(colorLocation, 1,1,1,1);
+        gl.drawArrays(gl.TRIANGLES, 0, buffer.numItems);
     },
     
     drawRect = function(gl, rect) {
@@ -182,34 +232,35 @@ PONG.WebGLRenderer = function() {
         var x2 = rect.x + rect.width;
         var y1 = rect.y;
         var y2 = rect.y + rect.height;
-
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([x1, y1, x2, y1, x1, y2, x1, y2, x2, y1, x2, y2]), gl.STATIC_DRAW);
         gl.uniform4f(colorLocation, rect.rgba.r / 255, rect.rgba.g / 255, rect.rgba.b / 255, 1);
-
         // Draw the rectangle.
         gl.drawArrays(gl.TRIANGLES, 0, 6);
     }, 
     
-    
-    
     render = function() {
-            //TODO: check Tx and Ty in the loop
-            //clear
-            gl.clear(gl.COLOR_BUFFER_BIT);
-            for (var i = 0; i < PONG.displayList.length; i++) {
-                drawRect(gl, PONG.displayList[i]); 
+        //clear
+        gl.clear(gl.COLOR_BUFFER_BIT);
+
+        //TODO: check Tx and Ty in the loop
+        drawScene();
+        switch(PONG.currentScreen){
+            case PONG.screens.INTRO_SCREEN:{
+                drawIntro();
+                break;
+            }
+            case PONG.screens.GAME_SCREEN:{
+                drawGame();
+                break;
+            }
+            case PONG.screens.GAME_OVER_SCREEN:{
+                drawOutro();
+                break;
             }
         }
+        
+    };
     
-    /*
-    render = function() {
-            //TODO: check Tx and Ty in the loop
-            //clear
-            //gl.clear(gl.COLOR_BUFFER_BIT);
-            drawScene();
-        }
-    */
-    ;
     return {
         init : init,
         drawRect : drawRect,
