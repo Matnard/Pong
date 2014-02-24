@@ -20,7 +20,11 @@ PONG.CanvasRenderer = function(){
         //clear
         ctx.clearRect ( 0 , 0 , PONG.stageWidth , PONG.stageHeight );
         for(var i=0; i<PONG.displayList.length; i++){
-            drawRect(PONG.displayList[i]);
+            
+            for(var j=0,k=PONG.displayList[i].graphics.length; j<k; j++){
+              drawRect(PONG.displayList[i].graphics[j]);
+            };
+            
         }
     };
     

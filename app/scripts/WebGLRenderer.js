@@ -18,12 +18,19 @@ PONG.WebGLRenderer = function() {
     gameOverBuffersInitialized = false;
 
     rectToVertices = function(rect) {
-        var x1 = rect.x;
-        var x2 = rect.x + rect.width;
-        var y1 = rect.y;
-        var y2 = rect.y + rect.height;
+        var x1 = rect.x,
+            x2 = rect.x + rect.width,
+            y1 = rect.y,
+            y2 = rect.y + rect.height;
 
-        return [x1, y1, x2, y1, x1, y2, x1, y2, x2, y1, x2, y2];
+        return [
+            x1, y1, 
+            x2, y1, 
+            x1, y2, 
+            x1, y2, 
+            x2, y1, 
+            x2, y2
+        ];
     }, 
     
     getShader = function(gl, id) {
@@ -69,7 +76,8 @@ PONG.WebGLRenderer = function() {
 
             sceneEntities[i] = {
                 buffer : gl.createBuffer(),
-                color : PONG.backgroundList[i].rgba
+                color : PONG.backgroundList[i].rgba,
+                translations: [0,0]
             };
 
             gl.bindBuffer(gl.ARRAY_BUFFER, sceneEntities[i].buffer);
@@ -87,7 +95,8 @@ PONG.WebGLRenderer = function() {
         
         introEntities[0] = {
             buffer : gl.createBuffer(),
-            color : PONG.titles.INTRO[0].rgba
+            color : PONG.titles.INTRO[0].rgba,
+            translations: [0,0]
         };
         gl.bindBuffer(gl.ARRAY_BUFFER, introEntities[0].buffer);
 
@@ -108,7 +117,8 @@ PONG.WebGLRenderer = function() {
 
             gameEntities[i] = {
                 buffer : gl.createBuffer(),
-                color : PONG.gameScreenList[i].rgba
+                color : PONG.gameScreenList[i].rgba,
+                translations: [0,0]
             };
 
             gl.bindBuffer(gl.ARRAY_BUFFER, gameEntities[i].buffer);
@@ -126,7 +136,8 @@ PONG.WebGLRenderer = function() {
         
         outroEntities[0] = {
             buffer : gl.createBuffer(),
-            color : PONG.titles.GAME_OVER[0].rgba
+            color : PONG.titles.GAME_OVER[0].rgba,
+            translations: [0,0]
         };
         gl.bindBuffer(gl.ARRAY_BUFFER, outroEntities[0].buffer);
 
@@ -243,6 +254,24 @@ PONG.WebGLRenderer = function() {
         gl.clear(gl.COLOR_BUFFER_BIT);
 
         //TODO: check Tx and Ty in the loop
+        for(var i=0,j=PONG.updatedEntities.length; i<j; i++){
+           switch(PONG.currentScreen){
+                case PONG.screens.INTRO_SCREEN:{
+                    //introEntities[0]
+                    break;
+                }
+                case PONG.screens.GAME_SCREEN:{
+                    //gameEntities
+                    break;
+                }
+                case PONG.screens.GAME_OVER_SCREEN:{
+                    //outroEntities[0]
+                    break;
+                }
+            }
+        };
+        
+        
         drawScene();
         switch(PONG.currentScreen){
             case PONG.screens.INTRO_SCREEN:{

@@ -15,6 +15,7 @@ PONG.event = {
 };
 
 PONG.types = {
+  ENTITY: "ENTITY",
   RECT: "RECT",
   SCENE: "SCENE",
   BALL: "BALL",
@@ -30,6 +31,7 @@ PONG.stageHeight = 446;
 PONG.displayList = [];
 PONG.backgroundList = [];
 PONG.gameScreenList = [];
+PONG.updatedEntities = [];
 
 PONG.titles = {
     INTRO : [],

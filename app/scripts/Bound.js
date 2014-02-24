@@ -1,9 +1,10 @@
 PONG.Bound = function(){
-    PONG.Rect.apply(this, arguments);
+    PONG.Entity.apply(this, arguments);
+    this.type = PONG.types.BOUND;
     this.width = 600;
     this.height = 13;
-    this.type = PONG.types.BOUND;
+    this.graphics = [new PONG.Rect(0,0,this.width, this.height, this.color)];
 };
 
-PONG.Bound.prototype = Object.create( PONG.Rect.prototype );
+PONG.Bound.prototype = Object.create( PONG.Entity.prototype );
 PONG.Bound.prototype.constructor = PONG.Bound;

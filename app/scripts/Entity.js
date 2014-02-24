@@ -1,4 +1,5 @@
-PONG.Rect = function(x, y, width, height, color, rgba){
+PONG.Entity = function(x, y, width, height, color, rgba){
+    this.graphics = [];
     this._x = x || 0;
     this._y = y || 0;
     this._Tx = 0;
@@ -13,42 +14,57 @@ PONG.Rect = function(x, y, width, height, color, rgba){
         b: 255,
         a: 255
     };
-    this.type = PONG.types.RECT;
+    this.type = PONG.types.ENTITY;
 };
 
-Object.defineProperty(PONG.Rect.prototype, 'x', {
+PONG.Entity.prototype.clearTranslations = function() {
+    this._Tx = 0;
+    this._Ty = 0;
+};
+
+Object.defineProperty(PONG.Entity.prototype, 'x', {
     get: function() {
         return this._x;
     },
     set: function(value) {
         this._Tx = value - this._x;
+        
+        for(var i=0,j=this.graphics.length; i<j; i++){
+            this.graphics[i].x += this._Tx;
+        };
+        
         this._x = value;
     }
 });
 
-Object.defineProperty(PONG.Rect.prototype, 'y', {
+Object.defineProperty(PONG.Entity.prototype, 'y', {
     get: function() {
         return this._y;
     },
     set: function(value) {
         this._Ty = value - this._y;
+        
+        for(var i=0,j=this.graphics.length; i<j; i++){
+            this.graphics[i].y += this._Ty;
+        };
+        
         this._y = value;
     }
 });
 
-Object.defineProperty(PONG.Rect.prototype, 'Tx', {
+Object.defineProperty(PONG.Entity.prototype, 'Tx', {
     get: function() {
         return this._Tx;
     }
 });
 
-Object.defineProperty(PONG.Rect.prototype, 'Ty', {
+Object.defineProperty(PONG.Entity.prototype, 'Ty', {
     get: function() {
         return this._Ty;
     }
 });
 
-Object.defineProperty(PONG.Rect.prototype, 'width', {
+Object.defineProperty(PONG.Entity.prototype, 'width', {
     get: function() {
         return this._width;
     },
@@ -57,7 +73,7 @@ Object.defineProperty(PONG.Rect.prototype, 'width', {
     }
 });
 
-Object.defineProperty(PONG.Rect.prototype, 'height', {
+Object.defineProperty(PONG.Entity.prototype, 'height', {
     get: function() {
         return this._height;
     },
@@ -66,7 +82,7 @@ Object.defineProperty(PONG.Rect.prototype, 'height', {
     }
 });
 
-Object.defineProperty(PONG.Rect.prototype, 'color', {
+Object.defineProperty(PONG.Entity.prototype, 'color', {
     get: function() {
         return this._color;
     },
@@ -75,7 +91,7 @@ Object.defineProperty(PONG.Rect.prototype, 'color', {
     }
 });
 
-Object.defineProperty(PONG.Rect.prototype, 'rgba', {
+Object.defineProperty(PONG.Entity.prototype, 'rgba', {
     get: function() {
         return this._rgba;
     },

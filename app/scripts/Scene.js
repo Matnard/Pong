@@ -1,8 +1,5 @@
 PONG.Scene = function(){
-    PONG.Rect.apply(this, arguments);
-    this.y = 13;
-    this.width = 600;
-    this.height = 420;
+    PONG.Entity.apply(this, arguments);
     this.color = "#5856D6";
     this.rgba = {
         r: 88,
@@ -11,7 +8,8 @@ PONG.Scene = function(){
         a: 255
     };
     this.type = PONG.types.SCENE;
+    this.graphics = [new PONG.Rect(0,13,600,420, this.color, this.rgba)];
 };
 
-PONG.Scene.prototype = Object.create( PONG.Rect.prototype );
+PONG.Scene.prototype = Object.create( PONG.Entity.prototype );
 PONG.Scene.prototype.constructor = PONG.Scene;
