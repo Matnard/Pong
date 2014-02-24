@@ -6,16 +6,8 @@ PONG.WebGLRenderer = function() {
     program, 
     positionLocation, 
     colorLocation, 
-    resolutionLocation, 
-
-    sceneEntities = [], 
-    gameEntities = [], 
-    introEntities = [], 
-    outroEntities = [], 
-    sceneBuffersInitialized = false;
-    introBuffersInitialized = false;
-    gameBuffersInitialized = false;
-    gameOverBuffersInitialized = false;
+    translationLocation,
+    resolutionLocation;
 
     rectToVertices = function(rect) {
         var x1 = rect.x,
@@ -70,85 +62,63 @@ PONG.WebGLRenderer = function() {
     
     initSceneBuffers = function() {
         console.log("init scene buffers");
-
         for (var i = 0, j = PONG.backgroundList.length; i < j; i++) {
             var vertices;
-
-            sceneEntities[i] = {
-                buffer : gl.createBuffer(),
-                color : PONG.backgroundList[i].rgba,
-                translations: [0,0]
-            };
-
-            gl.bindBuffer(gl.ARRAY_BUFFER, sceneEntities[i].buffer);
-
-            vertices = rectToVertices(PONG.backgroundList[i]);
+            PONG.backgroundList[i].buffer = gl.createBuffer();  
+            gl.bindBuffer(gl.ARRAY_BUFFER, PONG.backgroundList[i].buffer);
+            //PONG.backgroundList[i].graphics[0].x = 0;
+            //PONG.backgroundList[i].graphics[0].y = 0;
+            vertices = rectToVertices(PONG.backgroundList[i].graphics[0]);
             gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-            sceneEntities[i].buffer.numItems = vertices.length * 0.5;
+            PONG.backgroundList[i].buffer.numItems = vertices.length * 0.5;
         };
-        sceneBuffersInitialized = true;
     }, 
     
     initIntroBuffers = function() {
         console.log("init intro buffers");
         var vertices = [];
-        
-        introEntities[0] = {
-            buffer : gl.createBuffer(),
-            color : PONG.titles.INTRO[0].rgba,
-            translations: [0,0]
-        };
-        gl.bindBuffer(gl.ARRAY_BUFFER, introEntities[0].buffer);
+        PONG.titles.INTRO.buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, PONG.titles.INTRO.buffer);
 
-        for (var i = 0, j = PONG.titles.INTRO.length; i < j; i++) {
-            vertices = vertices.concat(rectToVertices(PONG.titles.INTRO[i]));
+        for (var i = 0, j = PONG.titles.INTRO.graphics.length; i < j; i++) {
+            //PONG.titles.INTRO.graphics[i].x = 0;
+            //PONG.titles.INTRO.graphics[i].y = 0;
+            vertices = vertices.concat(rectToVertices(PONG.titles.INTRO.graphics[i]));
         };
         
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-        introEntities[0].buffer.numItems = vertices.length * 0.5;
-
-        introBuffersInitialized = true;
+        PONG.titles.INTRO.buffer.numItems = vertices.length * 0.5;
     }, 
     
     initGameBuffers = function() {
-        console.log("init game buffers");
+        console.log("init game buffers", PONG.gameScreenList);
         for (var i = 0, j = PONG.gameScreenList.length; i < j; i++) {
             var vertices;
-
-            gameEntities[i] = {
-                buffer : gl.createBuffer(),
-                color : PONG.gameScreenList[i].rgba,
-                translations: [0,0]
-            };
-
-            gl.bindBuffer(gl.ARRAY_BUFFER, gameEntities[i].buffer);
-
-            vertices = rectToVertices(PONG.gameScreenList[i]);
+            PONG.gameScreenList[i].buffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, PONG.gameScreenList[i].buffer);
+            //PONG.gameScreenList[i].graphics[0].x = 0;
+            //PONG.gameScreenList[i].graphics[0].y = 0;
+            vertices = rectToVertices(PONG.gameScreenList[i].graphics[0]);
+            console.log(vertices);
             gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-            gameEntities[i].buffer.numItems = vertices.length * 0.5;
+            PONG.gameScreenList[i].buffer.numItems = vertices.length * 0.5;
         };
-        gameBuffersInitialized = true;
     }, 
     
     initGameOverBuffers = function() {
         console.log("init game over buffers");
         var vertices = [];
-        
-        outroEntities[0] = {
-            buffer : gl.createBuffer(),
-            color : PONG.titles.GAME_OVER[0].rgba,
-            translations: [0,0]
-        };
-        gl.bindBuffer(gl.ARRAY_BUFFER, outroEntities[0].buffer);
+        PONG.titles.GAME_OVER.buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, PONG.titles.GAME_OVER.buffer);
 
-        for (var i = 0, j = PONG.titles.GAME_OVER.length; i < j; i++) {
-            vertices = vertices.concat(rectToVertices(PONG.titles.GAME_OVER[i]));
+        for (var i = 0, j = PONG.titles.GAME_OVER.graphics.length; i < j; i++) {
+            //PONG.titles.GAME_OVER.graphics[i].x = 0;
+            //PONG.titles.GAME_OVER.graphics[i].y = 0;
+            vertices = vertices.concat(rectToVertices(PONG.titles.GAME_OVER.graphics[i]));
         };
         
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-        outroEntities[0].buffer.numItems = vertices.length * 0.5;
-
-        gameOverBuffersInitialized = true;
+        PONG.titles.GAME_OVER.buffer.numItems = vertices.length * 0.5;
     }, 
     
     init = function() {
@@ -186,6 +156,7 @@ PONG.WebGLRenderer = function() {
         // look up where the vertex data needs to go.
         positionLocation = gl.getAttribLocation(program, "a_position");
         colorLocation = gl.getUniformLocation(program, "u_color");
+        translationLocation = gl.getUniformLocation(program, "u_translation");
         resolutionLocation = gl.getUniformLocation(program, "u_resolution");
         gl.uniform2f(resolutionLocation, stage.width, stage.height);
 
@@ -200,79 +171,62 @@ PONG.WebGLRenderer = function() {
     }(), 
     
     drawScene = function() {
-        for(var i=0,j=sceneEntities.length; i<j; i++){
-          var buffer = sceneEntities[i].buffer;
+        for(var i=0,j=PONG.backgroundList.length; i<j; i++){
+          var buffer = PONG.backgroundList[i].buffer;
           gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
           gl.enableVertexAttribArray(positionLocation);
           gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
-          gl.uniform4f(colorLocation, 1,1,1,1);
+          gl.uniform4f(colorLocation, PONG.backgroundList[i].rgba.r/255, PONG.backgroundList[i].rgba.g/255, PONG.backgroundList[i].rgba.b/255, PONG.backgroundList[i].rgba.a/255);
+          gl.uniform2fv(translationLocation, [PONG.backgroundList[i].Tx, PONG.backgroundList[i].Ty]);
+          PONG.backgroundList[i].clearTranslations();
           gl.drawArrays(gl.TRIANGLES, 0, buffer.numItems);
         };
     },
     
     drawIntro = function() {
-        var buffer = introEntities[0].buffer;
+        //var subject = PONG.titles.INTRO;
+        var buffer = PONG.titles.INTRO.buffer;
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
         gl.enableVertexAttribArray(positionLocation);
-        gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
         gl.uniform4f(colorLocation, 1,1,1,1);
+        gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+        //debugger;
+        gl.uniform2fv(translationLocation, [PONG.titles.INTRO.Tx, PONG.titles.INTRO.Ty]);
+        PONG.titles.INTRO.clearTranslations();
         gl.drawArrays(gl.TRIANGLES, 0, buffer.numItems);
     },
     drawGame = function() {
-        for(var i=0,j=gameEntities.length; i<j; i++){
-          var buffer = gameEntities[i].buffer;
+        //var subject = PONG.gameScreenList[2];
+        for(var i=0,j=PONG.gameScreenList.length; i<j; i++){
+          var buffer = PONG.gameScreenList[i].buffer;
           gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
           gl.enableVertexAttribArray(positionLocation);
           gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
           gl.uniform4f(colorLocation, 1,1,1,1);
+          //if(i==2)
+            //debugger;
+          gl.uniform2fv(translationLocation, [PONG.gameScreenList[i].Tx, PONG.gameScreenList[i].Ty]);
+          PONG.gameScreenList[i].clearTranslations();
           gl.drawArrays(gl.TRIANGLES, 0, buffer.numItems);
         };
     },
     
     drawOutro = function() {
-        var buffer = outroEntities[0].buffer;
+        var buffer = PONG.titles.GAME_OVER.buffer;
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
         gl.enableVertexAttribArray(positionLocation);
         gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
         gl.uniform4f(colorLocation, 1,1,1,1);
+        gl.uniform2fv(translationLocation, [PONG.titles.GAME_OVER.Tx, PONG.titles.GAME_OVER.Ty]);
+        PONG.titles.GAME_OVER.clearTranslations();
         gl.drawArrays(gl.TRIANGLES, 0, buffer.numItems);
     },
-    
-    drawRect = function(gl, rect) {
-        var x1 = rect.x;
-        var x2 = rect.x + rect.width;
-        var y1 = rect.y;
-        var y2 = rect.y + rect.height;
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([x1, y1, x2, y1, x1, y2, x1, y2, x2, y1, x2, y2]), gl.STATIC_DRAW);
-        gl.uniform4f(colorLocation, rect.rgba.r / 255, rect.rgba.g / 255, rect.rgba.b / 255, 1);
-        // Draw the rectangle.
-        gl.drawArrays(gl.TRIANGLES, 0, 6);
-    }, 
     
     render = function() {
         //clear
         gl.clear(gl.COLOR_BUFFER_BIT);
-
-        //TODO: check Tx and Ty in the loop
-        for(var i=0,j=PONG.updatedEntities.length; i<j; i++){
-           switch(PONG.currentScreen){
-                case PONG.screens.INTRO_SCREEN:{
-                    //introEntities[0]
-                    break;
-                }
-                case PONG.screens.GAME_SCREEN:{
-                    //gameEntities
-                    break;
-                }
-                case PONG.screens.GAME_OVER_SCREEN:{
-                    //outroEntities[0]
-                    break;
-                }
-            }
-        };
-        
-        
         drawScene();
+        
         switch(PONG.currentScreen){
             case PONG.screens.INTRO_SCREEN:{
                 drawIntro();
@@ -292,7 +246,6 @@ PONG.WebGLRenderer = function() {
     
     return {
         init : init,
-        drawRect : drawRect,
         render : render
     };
 };

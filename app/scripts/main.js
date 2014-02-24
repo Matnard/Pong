@@ -260,6 +260,7 @@ PONG.main = function (){
         
         reset = function(){
             //debugger;
+            console.log("reset game position");
             player1.x = 0;
             player1.y = MIDDLE_Y_POSITION;
             
@@ -268,7 +269,6 @@ PONG.main = function (){
             
             ball.x = (PONG.stageWidth - ball.width) * 0.5;
             ball.y = (PONG.stageHeight - ball.height) * 0.5;
-            console.log([player1,ball,player2]);
             resetScore();
         },
         
@@ -283,8 +283,8 @@ PONG.main = function (){
             topBound = new PONG.Bound();
             bottomBound = new PONG.Bound();
             bottomBound.y = PONG.stageHeight - bottomBound.height;
-            //scene = new PONG.Scene();
-            //PONG.backgroundList.push(scene);
+            scene = new PONG.Scene();
+            PONG.backgroundList.push(scene);
             PONG.backgroundList.push(bottomBound);
             PONG.backgroundList.push(topBound);
             
@@ -322,12 +322,14 @@ PONG.main = function (){
                 }
             };
             
+            
+            //PONG.renderer = PONG.DomRenderer();
+            //PONG.renderer = PONG.CanvasRenderer();
+            PONG.renderer = PONG.WebGLRenderer();
+            
             game = new PONG.Game();
             game.start();
             
-            //PONG.renderer = PONG.DomRenderer();
-            PONG.renderer = PONG.CanvasRenderer();
-            //PONG.renderer = PONG.WebGLRenderer();
             requestAnimationFrame(onEnterFrame);
         };
         

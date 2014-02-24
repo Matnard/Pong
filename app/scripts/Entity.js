@@ -29,6 +29,7 @@ Object.defineProperty(PONG.Entity.prototype, 'x', {
     set: function(value) {
         this._Tx = value - this._x;
         
+        //move children
         for(var i=0,j=this.graphics.length; i<j; i++){
             this.graphics[i].x += this._Tx;
         };
@@ -44,6 +45,7 @@ Object.defineProperty(PONG.Entity.prototype, 'y', {
     set: function(value) {
         this._Ty = value - this._y;
         
+        //move children
         for(var i=0,j=this.graphics.length; i<j; i++){
             this.graphics[i].y += this._Ty;
         };
