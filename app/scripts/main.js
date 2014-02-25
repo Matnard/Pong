@@ -179,7 +179,6 @@ PONG.main = function (){
             
             amplitude = (1 + Math.sin(elapsedTime)) * 0.5;
             player2.y = (BOTTOM_COLLISION_LINE-player2.height-TOP_COLLISION_LINE) * amplitude + TOP_COLLISION_LINE;
-            
                         
             switch( playerYCheck() ){
                 case WALL :{
@@ -201,25 +200,12 @@ PONG.main = function (){
                 ball.y = BOTTOM_COLLISION_LINE-ball.height; 
                 ball.speed.y *= -1; 
             }
-        },
-        
-        refreshUpdatedEntities = function() {
             
-            PONG.updatedEntities = [];
             
-            for(var i=0,j=PONG.displayList.length; i<j; i++){
-              if(PONG.displayList[i].Tx !== 0 || PONG.displayList[i].Ty !== 0){
-                  PONG.updatedEntities.push(PONG.displayList[i]);
-                  PONG.displayList[i].clearTranslations();
-              }
-            };    
         },
     
         onEnterFrame = function() {     
             
-            //refreshUpdatedEntities();
-            //console.log(PONG.updatedEntities.length);
-
             PONG.renderer.render();
             
             if(PONG.currentScreen == PONG.screens.GAME_SCREEN){
@@ -230,7 +216,6 @@ PONG.main = function (){
         },
         
         start = function () {
-            reset();
             game.trigger(PONG.event.START);
         },
        
@@ -247,6 +232,7 @@ PONG.main = function (){
         },
         
         updateScore = function(){
+            return;
             printScore();
             if(score.player1 == 3 || score.player2 == 3)
                 die();
@@ -261,6 +247,10 @@ PONG.main = function (){
         reset = function(){
             //debugger;
             console.log("reset game position");
+            PONG.titles.INTRO.x = 140;
+            PONG.titles.INTRO.y = 150;
+            
+            
             player1.x = 0;
             player1.y = MIDDLE_Y_POSITION;
             
@@ -269,20 +259,21 @@ PONG.main = function (){
             
             ball.x = (PONG.stageWidth - ball.width) * 0.5;
             ball.y = (PONG.stageHeight - ball.height) * 0.5;
+
+            bottomBound.y = PONG.stageHeight - bottomBound.height;
+
+            PONG.titles.GAME_OVER.x = 90;
+            PONG.titles.GAME_OVER.y = 150;
+
             resetScore();
         },
         
         init = function () {
             
             PONG.titles.INTRO = new PONG.IntroTitle();
-            PONG.titles.INTRO.x = 140;
-            PONG.titles.INTRO.y = 150;
             PONG.titles.GAME_OVER = new PONG.OutroTitle();
-            PONG.titles.GAME_OVER.x = 90;
-            PONG.titles.GAME_OVER.y = 150;
             topBound = new PONG.Bound();
             bottomBound = new PONG.Bound();
-            bottomBound.y = PONG.stageHeight - bottomBound.height;
             scene = new PONG.Scene();
             PONG.backgroundList.push(scene);
             PONG.backgroundList.push(bottomBound);
@@ -293,13 +284,12 @@ PONG.main = function (){
             player1.direction = 0;
             player2 = new PONG.Paddle();
             
-            
             PONG.gameScreenList.push(ball);
             PONG.gameScreenList.push(player1);
             PONG.gameScreenList.push(player2);
             
             TOP_COLLISION_LINE = topBound.height;
-            BOTTOM_COLLISION_LINE = bottomBound.y;
+            BOTTOM_COLLISION_LINE = PONG.stageHeight - bottomBound.height;
             LEFT_COLLISION_LINE = player1.width;
             RIGHT_COLLISION_LINE = PONG.stageWidth - player2.width;
             MIDDLE_Y_POSITION = (PONG.stageHeight - player1.height)*0.5;
@@ -326,6 +316,8 @@ PONG.main = function (){
             //PONG.renderer = PONG.DomRenderer();
             //PONG.renderer = PONG.CanvasRenderer();
             PONG.renderer = PONG.WebGLRenderer();
+            
+            reset();
             
             game = new PONG.Game();
             game.start();

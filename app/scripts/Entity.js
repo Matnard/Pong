@@ -2,8 +2,6 @@ PONG.Entity = function(x, y, width, height, color, rgba){
     this.graphics = [];
     this._x = x || 0;
     this._y = y || 0;
-    this._Tx = 0;
-    this._Ty = 0;
     this._width = width || 0;
     this._height = height || 0;
     //TODO: parse # or rgba() get a string
@@ -17,21 +15,14 @@ PONG.Entity = function(x, y, width, height, color, rgba){
     this.type = PONG.types.ENTITY;
 };
 
-PONG.Entity.prototype.clearTranslations = function() {
-    this._Tx = 0;
-    this._Ty = 0;
-};
-
 Object.defineProperty(PONG.Entity.prototype, 'x', {
     get: function() {
         return this._x;
     },
     set: function(value) {
-        this._Tx = value - this._x;
-        
         //move children
         for(var i=0,j=this.graphics.length; i<j; i++){
-            this.graphics[i].x += this._Tx;
+            this.graphics[i].x += value - this._x;
         };
         
         this._x = value;
@@ -43,26 +34,12 @@ Object.defineProperty(PONG.Entity.prototype, 'y', {
         return this._y;
     },
     set: function(value) {
-        this._Ty = value - this._y;
-        
         //move children
         for(var i=0,j=this.graphics.length; i<j; i++){
-            this.graphics[i].y += this._Ty;
+            this.graphics[i].y += value - this._y;
         };
         
         this._y = value;
-    }
-});
-
-Object.defineProperty(PONG.Entity.prototype, 'Tx', {
-    get: function() {
-        return this._Tx;
-    }
-});
-
-Object.defineProperty(PONG.Entity.prototype, 'Ty', {
-    get: function() {
-        return this._Ty;
     }
 });
 

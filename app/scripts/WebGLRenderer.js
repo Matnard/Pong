@@ -154,31 +154,26 @@ PONG.WebGLRenderer = function() {
         gl.useProgram(program);
 
         // look up where the vertex data needs to go.
-        positionLocation = gl.getAttribLocation(program, "a_position");
-        colorLocation = gl.getUniformLocation(program, "u_color");
+        positionLocation    = gl.getAttribLocation(program, "a_position");
+        colorLocation       = gl.getUniformLocation(program, "u_color");
         translationLocation = gl.getUniformLocation(program, "u_translation");
-        resolutionLocation = gl.getUniformLocation(program, "u_resolution");
+        resolutionLocation  = gl.getUniformLocation(program, "u_resolution");
         gl.uniform2f(resolutionLocation, stage.width, stage.height);
 
-        // Create a buffer
-
-        
         initSceneBuffers();
         initIntroBuffers();
         initGameBuffers();
         initGameOverBuffers();
-       
     }(), 
     
     drawScene = function() {
         for(var i=0,j=PONG.backgroundList.length; i<j; i++){
           var buffer = PONG.backgroundList[i].buffer;
           gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-          gl.enableVertexAttribArray(positionLocation);
-          gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
           gl.uniform4f(colorLocation, PONG.backgroundList[i].rgba.r/255, PONG.backgroundList[i].rgba.g/255, PONG.backgroundList[i].rgba.b/255, PONG.backgroundList[i].rgba.a/255);
-          gl.uniform2fv(translationLocation, [PONG.backgroundList[i].Tx, PONG.backgroundList[i].Ty]);
-          PONG.backgroundList[i].clearTranslations();
+          gl.uniform2fv(translationLocation, [PONG.backgroundList[i].x, PONG.backgroundList[i].y]);
+          gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+          gl.enableVertexAttribArray(positionLocation);
           gl.drawArrays(gl.TRIANGLES, 0, buffer.numItems);
         };
     },
@@ -187,26 +182,21 @@ PONG.WebGLRenderer = function() {
         //var subject = PONG.titles.INTRO;
         var buffer = PONG.titles.INTRO.buffer;
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-        gl.enableVertexAttribArray(positionLocation);
         gl.uniform4f(colorLocation, 1,1,1,1);
+        gl.uniform2fv(translationLocation, [PONG.titles.INTRO.x, PONG.titles.INTRO.y]);
         gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
-        //debugger;
-        gl.uniform2fv(translationLocation, [PONG.titles.INTRO.Tx, PONG.titles.INTRO.Ty]);
-        PONG.titles.INTRO.clearTranslations();
+        gl.enableVertexAttribArray(positionLocation);
         gl.drawArrays(gl.TRIANGLES, 0, buffer.numItems);
+        console.log(PONG.titles.INTRO.x, PONG.titles.INTRO.y);
     },
     drawGame = function() {
-        //var subject = PONG.gameScreenList[2];
         for(var i=0,j=PONG.gameScreenList.length; i<j; i++){
           var buffer = PONG.gameScreenList[i].buffer;
           gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-          gl.enableVertexAttribArray(positionLocation);
-          gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
           gl.uniform4f(colorLocation, 1,1,1,1);
-          //if(i==2)
-            //debugger;
-          gl.uniform2fv(translationLocation, [PONG.gameScreenList[i].Tx, PONG.gameScreenList[i].Ty]);
-          PONG.gameScreenList[i].clearTranslations();
+          gl.uniform2fv(translationLocation, [PONG.gameScreenList[i].x, PONG.gameScreenList[i].y]);
+          gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+          gl.enableVertexAttribArray(positionLocation);
           gl.drawArrays(gl.TRIANGLES, 0, buffer.numItems);
         };
     },
@@ -214,11 +204,10 @@ PONG.WebGLRenderer = function() {
     drawOutro = function() {
         var buffer = PONG.titles.GAME_OVER.buffer;
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-        gl.enableVertexAttribArray(positionLocation);
-        gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
         gl.uniform4f(colorLocation, 1,1,1,1);
-        gl.uniform2fv(translationLocation, [PONG.titles.GAME_OVER.Tx, PONG.titles.GAME_OVER.Ty]);
-        PONG.titles.GAME_OVER.clearTranslations();
+        gl.uniform2fv(translationLocation, [PONG.titles.GAME_OVER.x, PONG.titles.GAME_OVER.y]);
+        gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(positionLocation);
         gl.drawArrays(gl.TRIANGLES, 0, buffer.numItems);
     },
     
