@@ -4,6 +4,9 @@ PONG.Entity = function(x, y, width, height, color, rgba){
     this._y = y || 0;
     this._width = width || 0;
     this._height = height || 0;
+    this._rotation = [0,1];
+    this._degree = 0;
+    this._rad = 0;
     //TODO: parse # or rgba() get a string
     this._color = color || "#FFFFFF";
     this._rgba = rgba || {
@@ -60,6 +63,36 @@ Object.defineProperty(PONG.Entity.prototype, 'height', {
         this._height = value;
     }
 });
+
+
+Object.defineProperty(PONG.Entity.prototype, 'degreeRotation', {
+    get: function() {
+        return this._degree;
+    },
+    set: function(value) {
+        this._degree = value;
+        this._rad = value * Math.PI / 180;
+        this._rotation = [Math.sin(this._rad), Math.cos(this._rad)];
+    }
+});
+
+Object.defineProperty(PONG.Entity.prototype, 'radRotation', {
+    get: function() {
+        return this._degree;
+    },
+    set: function(value) {
+        this._rad = value;
+        this._degree = value * 180 / Math.PI;
+        this._rotation = [Math.sin(this._rad), Math.cos(this._rad)];
+    }
+});
+
+Object.defineProperty(PONG.Entity.prototype, 'rotation', {
+    get: function() {
+        return this._rotation;
+    }
+});
+
 
 Object.defineProperty(PONG.Entity.prototype, 'color', {
     get: function() {

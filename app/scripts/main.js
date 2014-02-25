@@ -166,6 +166,7 @@ PONG.main = function (){
                 
             ball.x += ball.speed.x;
             ball.y += ball.speed.y;
+            ball.degreeRotation += 1;
             
             player1.y += player1.direction * 3;
             
