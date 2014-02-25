@@ -6,7 +6,7 @@ PONG.IntroTitle = function(){
         new PONG.Rect(0,0,23,71, this.color),
         new PONG.Rect(23,0,38,13, this.color),
         new PONG.Rect(23,39,38,13, this.color),
-        new PONG.Rect(49,10,22,32, this.color)/*,
+        new PONG.Rect(49,10,22,32, this.color),
         
         //O
         new PONG.Rect(78,10,23,51, this.color),
@@ -29,7 +29,7 @@ PONG.IntroTitle = function(){
         new PONG.Rect(254,49,12,22, this.color),
         new PONG.Rect(266,58,39,13, this.color),
         new PONG.Rect(283,45,22,13, this.color),
-        new PONG.Rect(273,32,32,13, this.color)*/
+        new PONG.Rect(273,32,32,13, this.color)
     ];
 };
 

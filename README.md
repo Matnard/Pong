@@ -1,13 +1,14 @@
-Pong
+3D Accelerated Pong
 ====
 
-Goals: 
-
-- [x] Keep the code in a namespace
-- [x] Use the state pattern to switch among screens
+- [x] Create a simple drawing API to create squares
 - [x] Render with DOM elements
-- [x] Render in a 2D Canvas
-- [x] Render in webGL by drawing triangles
-- [ ] Upload the geometry and do the translation in the shader
-- [ ] Render in webGL in 3D
-- [ ] Better IA than Math.sin()
+- [x] Bring up a simple game logic (PONG) 
+- [x] Have different screens (intro, game and game over screen) 
+- [x] Use the state pattern to switch among screens
+- [x] Render in a 2D context canvas
+- [x] Render in webGL context canvas by drawing triangles
+- [x] Upload the geometry to GPU and do the tranforms in the shader (scale, rotation, translation)
+- [ ] Apply translations in webGL with 3x3 2D matrices
+- [ ] Add third dimension to squares in the API to create cubes
+- [ ] Render in webGL in 3D with 4x4 matrices

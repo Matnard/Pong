@@ -6,8 +6,10 @@ PONG.WebGLRenderer = function() {
     program, 
     positionLocation, 
     colorLocation, 
-    translationLocation,
+    /*translationLocation,
     rotationLocation,
+    scaleLocation,*/
+    matrix,
     resolutionLocation;
 
     rectToVertices = function(rect) {
@@ -141,7 +143,7 @@ PONG.WebGLRenderer = function() {
         gl.viewportWidth = stage.width;
         gl.viewportHeight = stage.height;
 
-        vertexShader = getShader(gl, "shader-vs");
+        vertexShader = getShader(gl, "2d-vertex-shader");
         fragmentShader = getShader(gl, "shader-fs");
         program = gl.createProgram();
         gl.attachShader(program, vertexShader);
@@ -155,11 +157,13 @@ PONG.WebGLRenderer = function() {
         gl.useProgram(program);
 
         // look up where the vertex data needs to go.
+        resolutionLocation  = gl.getUniformLocation(program, "u_resolution");
         positionLocation    = gl.getAttribLocation(program, "a_position");
         colorLocation       = gl.getUniformLocation(program, "u_color");
-        translationLocation = gl.getUniformLocation(program, "u_translation");
+        /*translationLocation = gl.getUniformLocation(program, "u_translation");
         rotationLocation    = gl.getUniformLocation(program, "u_rotation");
-        resolutionLocation  = gl.getUniformLocation(program, "u_resolution");
+        scaleLocation       = gl.getUniformLocation(program, "u_scale");*/
+        matrix              = gl.getUniformLocation(program, "u_matrix");
         gl.uniform2f(resolutionLocation, stage.width, stage.height);
 
         initSceneBuffers();
@@ -168,13 +172,44 @@ PONG.WebGLRenderer = function() {
         initGameOverBuffers();
     }(), 
     
+    getTranslationMatrix = function (tx, ty) {
+      return [
+         1,  0, 0,
+         0,  1, 0,
+        tx, ty, 1
+      ];
+    },
+    
+    getRotationMatrix = function (rotation) {
+      var s = rotation[0];
+      var c = rotation[1];
+      return [
+        c,-s, 0,
+        s, c, 0,
+        0, 0, 1
+      ];
+    },
+    
+    getScaleMatrix = function (sx, sy) {
+      return [
+        sx, 0, 0,
+        0, sy, 0,
+        0, 0, 1
+      ];
+    },
+    
     drawScene = function() {
         for(var i=0,j=PONG.backgroundList.length; i<j; i++){
           var buffer = PONG.backgroundList[i].buffer;
+          //PONG.backgroundList[i].degreeRotation += 1;
           gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
           gl.uniform4f(colorLocation, PONG.backgroundList[i].rgba.r/255, PONG.backgroundList[i].rgba.g/255, PONG.backgroundList[i].rgba.b/255, PONG.backgroundList[i].rgba.a/255);
+          
+          gl.uniform2fv(scaleLocation, PONG.backgroundList[i].scale);
           gl.uniform2fv(translationLocation, [PONG.backgroundList[i].x, PONG.backgroundList[i].y]);
           gl.uniform2fv(rotationLocation, PONG.backgroundList[i].rotation);
+          //https://gist.github.com/funkaster/1248396
+          
           gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
           gl.enableVertexAttribArray(positionLocation);
           gl.drawArrays(gl.TRIANGLES, 0, buffer.numItems);
@@ -183,11 +218,15 @@ PONG.WebGLRenderer = function() {
     
     drawIntro = function() {
         //var subject = PONG.titles.INTRO;
+        PONG.titles.INTRO.scale = 3;
         var buffer = PONG.titles.INTRO.buffer;
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
         gl.uniform4f(colorLocation, 1,1,1,1);
+        
+        gl.uniform2fv(scaleLocation, PONG.titles.INTRO.scale);
         gl.uniform2fv(translationLocation, [PONG.titles.INTRO.x, PONG.titles.INTRO.y]);
         gl.uniform2fv(rotationLocation, PONG.titles.INTRO.rotation);
+        
         gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(positionLocation);
         gl.drawArrays(gl.TRIANGLES, 0, buffer.numItems);
@@ -197,8 +236,11 @@ PONG.WebGLRenderer = function() {
           var buffer = PONG.gameScreenList[i].buffer;
           gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
           gl.uniform4f(colorLocation, 1,1,1,1);
+         
+          gl.uniform2fv(scaleLocation, PONG.gameScreenList[i].scale);
           gl.uniform2fv(translationLocation, [PONG.gameScreenList[i].x, PONG.gameScreenList[i].y]);
           gl.uniform2fv(rotationLocation, PONG.gameScreenList[i].rotation);
+          
           gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
           gl.enableVertexAttribArray(positionLocation);
           gl.drawArrays(gl.TRIANGLES, 0, buffer.numItems);
@@ -209,8 +251,11 @@ PONG.WebGLRenderer = function() {
         var buffer = PONG.titles.GAME_OVER.buffer;
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
         gl.uniform4f(colorLocation, 1,1,1,1);
+        
+        gl.uniform2fv(scaleLocation, PONG.titles.GAME_OVER.scale);
         gl.uniform2fv(translationLocation, [PONG.titles.GAME_OVER.x, PONG.titles.GAME_OVER.y]);
         gl.uniform2fv(rotationLocation, PONG.titles.GAME_OVER.rotation);
+        
         gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(positionLocation);
         gl.drawArrays(gl.TRIANGLES, 0, buffer.numItems);
