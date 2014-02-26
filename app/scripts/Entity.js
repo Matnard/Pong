@@ -47,6 +47,12 @@ Object.defineProperty(PONG.Entity.prototype, 'y', {
     }
 });
 
+Object.defineProperty(PONG.Entity.prototype, 'translation', {
+    get: function() {
+        return [this._x, this._y];
+    }
+});
+
 Object.defineProperty(PONG.Entity.prototype, 'width', {
     get: function() {
         return this._width;
