@@ -1,4 +1,4 @@
-PONG.WebGLRenderer = function() {
+PONG.WebGL3DRenderer = function() {
     var stage, 
     gl, 
     vertexShader, 

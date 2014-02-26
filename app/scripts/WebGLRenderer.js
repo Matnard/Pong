@@ -10,7 +10,8 @@ PONG.WebGLRenderer = function() {
     rotationLocation,
     scaleLocation,*/
     matrixLocation,
-    resolutionLocation;
+    resolutionLocation,
+    projection2D;
 
     rectToVertices = function(rect) {
         var x1 = rect.x,
@@ -119,6 +120,14 @@ PONG.WebGLRenderer = function() {
         PONG.titles.GAME_OVER.buffer.numItems = vertices.length * 0.5;
     }, 
     
+    make2DProjection = function(width, height) {
+      return [
+        2 / width, 0, 0,
+        0, -2 / height, 0,
+        -1, 1, 1
+      ];
+    },
+    
     init = function() {
         stage = document.createElement("canvas");
         stage.setAttribute("width", window.innerWidth + "px");
@@ -157,22 +166,18 @@ PONG.WebGLRenderer = function() {
         colorLocation       = gl.getUniformLocation(program, "u_color");
         
         matrixLocation             = gl.getUniformLocation(program, "u_matrix");
-        gl.uniform2f(resolutionLocation, stage.width, stage.height);
+        //gl.uniform2f(resolutionLocation, stage.width, stage.height);
 
         initSceneBuffers();
         initIntroBuffers();
         initGameBuffers();
         initGameOverBuffers();
+        
+        projection2D = make2DProjection(stage.width, stage.height);
     }(), 
     
     
-    make2DProjection = function(width, height) {
-      return [
-        2 / width, 0, 0,
-        0, -2 / height, 0,
-        -1, 1, 1
-      ];
-    },
+    
     
     getTranslationMatrix = function (translation) {
       var tx = translation[0],
@@ -244,12 +249,14 @@ PONG.WebGLRenderer = function() {
         }
         
         for(var i=0,j=entitiesArray.length; i<j; i++){
-          var buffer = entitiesArray[i].buffer;
+          var buffer,
+          transformMatrix;
+          
+          buffer = entitiesArray[i].buffer;         
           gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
           gl.uniform4f(colorLocation, entitiesArray[i].rgba.r/255, entitiesArray[i].rgba.g/255, entitiesArray[i].rgba.b/255, entitiesArray[i].rgba.a/255);
-          
-          
-          var transformMatrix = matrix3x3Multiply(
+
+          transformMatrix = matrix3x3Multiply(
               getScaleMatrix(entitiesArray[i].scale),
               getTranslationMatrix(entitiesArray[i].translation)
           );
@@ -257,10 +264,12 @@ PONG.WebGLRenderer = function() {
               transformMatrix,
               getRotationMatrix(entitiesArray[i].rotation)
           );
+          transformMatrix = matrix3x3Multiply(
+              transformMatrix,
+              projection2D
+          );
+          
           gl.uniformMatrix3fv(matrixLocation, false, transformMatrix);
-          
-          
-          
           gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
           gl.enableVertexAttribArray(positionLocation);
           gl.drawArrays(gl.TRIANGLES, 0, buffer.numItems);
