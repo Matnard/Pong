@@ -9,6 +9,6 @@
 - [x] Render in a 2D context canvas
 - [x] Render in webGL context canvas by drawing triangles
 - [x] Upload the geometry to GPU and do the tranforms in the shader (scale, rotation, translation)
-- [ ] Apply translations in webGL with 3x3 2D matrices
+- [x] Apply translations in webGL with 3x3 2D matrices
 - [ ] Add third dimension to squares in the API to create cubes
 - [ ] Render in webGL in 3D with 4x4 matrices

@@ -2,9 +2,11 @@ PONG.Entity = function(x, y, width, height, color, rgba){
     this.graphics = [];
     this._x = x || 0;
     this._y = y || 0;
+    this._z = 0;
     this._width = width || 0;
     this._height = height || 0;
-    this._scale = [1,1];
+    this._depth = 0;
+    this._scale = [1,1,1];
     this._degree = 0;
     this._rad = 0;
     this._rotation = [0,1];
@@ -47,9 +49,18 @@ Object.defineProperty(PONG.Entity.prototype, 'y', {
     }
 });
 
+Object.defineProperty(PONG.Entity.prototype, 'z', {
+    get: function() {
+        return this._z;
+    },
+    set: function(value) {        
+        this._z = value;
+    }
+});
+
 Object.defineProperty(PONG.Entity.prototype, 'translation', {
     get: function() {
-        return [this._x, this._y];
+        return [this._x, this._y, this._z];
     }
 });
 
@@ -68,6 +79,15 @@ Object.defineProperty(PONG.Entity.prototype, 'height', {
     },
     set: function(value) {
         this._height = value;
+    }
+});
+
+Object.defineProperty(PONG.Entity.prototype, 'depth', {
+    get: function() {
+        return this._depth;
+    },
+    set: function(value) {
+        this._depth = value;
     }
 });
 
@@ -115,6 +135,15 @@ Object.defineProperty(PONG.Entity.prototype, 'scaleY', {
     },
     set: function(value) {
         this._scale[1] = value;
+    }
+});
+
+Object.defineProperty(PONG.Entity.prototype, 'scaleZ', {
+    get: function() {
+        return this._scale[2];
+    },
+    set: function(value) {
+        this._scale[2] = value;
     }
 });
 

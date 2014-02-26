@@ -312,10 +312,31 @@ PONG.main = function (){
                 }
             };
             
+            document.addEventListener("touchstart",function(){
+                                        
+                switch(PONG.currentScreen){
+                    case PONG.screens.INTRO_SCREEN: {
+                        start(); 
+                        break;
+                    }
+                    case PONG.screens.GAME_SCREEN: {
+                        if(player1.direction == 0 ) player1.direction = 1;
+                        
+                        player1.direction *= -1; 
+                        break;
+                    }
+                    case PONG.screens.GAME_OVER_SCREEN: {
+                        startOver();
+                        break;
+                    }
+                }
+            }, true);
+            
             
             //PONG.renderer = PONG.DomRenderer();
             //PONG.renderer = PONG.CanvasRenderer();
             PONG.renderer = PONG.WebGLRenderer();
+            //PONG.renderer = PONG.WebGLRenderer();
             
             reset();
             
