@@ -1,9 +1,10 @@
 PONG.Rect = function(x, y, width, height, color, rgba){
     this._x = x || 0;
     this._y = y || 0;
-    this._z = 13;
+    this._z = 0;
     this._width = width || 0;
     this._height = height || 0;
+    this._depth = 13;
     //TODO: parse # or rgba() get a string
     this._color = color || "#FFFFFF";
     this._rgba = rgba || {
@@ -20,7 +21,6 @@ Object.defineProperty(PONG.Rect.prototype, 'x', {
         return this._x;
     },
     set: function(value) {
-        this._Tx = value - this._x;
         this._x = value;
     }
 });
@@ -30,7 +30,6 @@ Object.defineProperty(PONG.Rect.prototype, 'y', {
         return this._y;
     },
     set: function(value) {
-        this._Ty = value - this._y;
         this._y = value;
     }
 });
@@ -59,6 +58,15 @@ Object.defineProperty(PONG.Rect.prototype, 'height', {
     },
     set: function(value) {
         this._height = value;
+    }
+});
+
+Object.defineProperty(PONG.Rect.prototype, 'depth', {
+    get: function() {
+        return this._depth;
+    },
+    set: function(value) {
+        this._depth = value;
     }
 });
 

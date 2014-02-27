@@ -2,10 +2,10 @@ PONG.Entity = function(x, y, width, height, color, rgba){
     this.graphics = [];
     this._x = x || 0;
     this._y = y || 0;
-    this._z = 13;
+    this._z = 0;
     this._width = width || 0;
     this._height = height || 0;
-    this._depth = 0;
+    this._depth = 13;
     this._scale = [1,1,1];
     this._degree = 0;
     this._rad = 0;
@@ -55,7 +55,7 @@ Object.defineProperty(PONG.Entity.prototype, 'z', {
     },
     set: function(value) {  
         for(var i=0,j=this.graphics.length; i<j; i++){
-            this.graphics[i].z = value - this._z;
+            this.graphics[i].z = value;
         };      
         this._z = value;
     }
@@ -90,6 +90,9 @@ Object.defineProperty(PONG.Entity.prototype, 'depth', {
         return this._depth;
     },
     set: function(value) {
+        for(var i=0,j=this.graphics.length; i<j; i++){
+            this.graphics[i].depth = value;
+        }; 
         this._depth = value;
     }
 });

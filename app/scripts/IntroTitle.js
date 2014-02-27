@@ -37,6 +37,7 @@ PONG.IntroTitle = function(){
        new PONG.Rect(30,60,37,30, this.color)*/
        
     ];
+    this.z = 13;
 };
 
 PONG.IntroTitle.prototype = Object.create( PONG.Entity.prototype );

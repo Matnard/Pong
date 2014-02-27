@@ -16,7 +16,7 @@ PONG.WebGL3DRenderer = function() {
             x2 = rect.x + rect.width,
             y1 = rect.y,
             y2 = rect.y + rect.height,
-            z  = rect.z;
+            z  = rect.depth;
 
         return [
             //front face
@@ -109,9 +109,7 @@ PONG.WebGL3DRenderer = function() {
             var vertices;
             PONG.backgroundList[i].buffer = gl.createBuffer();  
             gl.bindBuffer(gl.ARRAY_BUFFER, PONG.backgroundList[i].buffer);
-            vertices = rectToVertices(PONG.backgroundList[i].graphics[0]);
-            console.log(vertices.length, vertices.length/3);
-            
+            vertices = rectToVertices(PONG.backgroundList[i].graphics[0]);            
             gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
             PONG.backgroundList[i].buffer.numItems = vertices.length / 3;
         };
@@ -166,12 +164,12 @@ PONG.WebGL3DRenderer = function() {
     init = function() {
         
         PONG.vars = {
-            translX: 293,
+            translX: 600,
             translY: 218,
             translZ: 338,
-            rotationX: 35,
-            rotationY: 37,
-            rotationZ: 25
+            rotationX: 0,
+            rotationY: 180,
+            rotationZ: 0
         };
         
         var gui = new dat.GUI();
