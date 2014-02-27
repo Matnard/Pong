@@ -206,14 +206,14 @@ PONG.main = function (){
         },
     
         onEnterFrame = function() {     
-            
+            stats.begin();
             PONG.renderer.render();
             
             if(PONG.currentScreen == PONG.screens.GAME_SCREEN){
                 updateGame();
             }
-            
-            requestAnimationFrame(onEnterFrame);
+            stats.end();
+            //requestAnimationFrame(onEnterFrame);
         },
         
         start = function () {
@@ -335,15 +335,16 @@ PONG.main = function (){
             
             //PONG.renderer = PONG.DomRenderer();
             //PONG.renderer = PONG.CanvasRenderer();
-            PONG.renderer = PONG.WebGLRenderer();
             //PONG.renderer = PONG.WebGLRenderer();
+            PONG.renderer = PONG.WebGL3DRenderer();
             
             reset();
             
             game = new PONG.Game();
             game.start();
             
-            requestAnimationFrame(onEnterFrame);
+            //requestAnimationFrame(onEnterFrame);
+            setInterval( onEnterFrame, 1000 / 60 );
         };
         
     document.addEventListener('DOMContentLoaded', function(){
