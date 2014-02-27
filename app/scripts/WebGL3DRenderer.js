@@ -16,7 +16,7 @@ PONG.WebGL3DRenderer = function() {
             x2 = rect.x + rect.width,
             y1 = rect.y,
             y2 = rect.y + rect.height,
-            z  = rect.z;
+            z  = 0;
 
         return [
             x1, y1, z,
@@ -69,6 +69,7 @@ PONG.WebGL3DRenderer = function() {
             PONG.backgroundList[i].buffer = gl.createBuffer();  
             gl.bindBuffer(gl.ARRAY_BUFFER, PONG.backgroundList[i].buffer);
             vertices = rectToVertices(PONG.backgroundList[i].graphics[0]);
+            console.log(vertices);
             gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
             PONG.backgroundList[i].buffer.numItems = vertices.length / 3;
         };
@@ -82,6 +83,7 @@ PONG.WebGL3DRenderer = function() {
         for (var i = 0, j = PONG.titles.INTRO.graphics.length; i < j; i++) {
             vertices = vertices.concat(rectToVertices(PONG.titles.INTRO.graphics[i]));
         };
+        console.log(vertices);
         
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
         PONG.titles.INTRO.buffer.numItems = vertices.length / 3;
@@ -93,6 +95,7 @@ PONG.WebGL3DRenderer = function() {
             PONG.gameScreenList[i].buffer = gl.createBuffer();
             gl.bindBuffer(gl.ARRAY_BUFFER, PONG.gameScreenList[i].buffer);
             vertices = rectToVertices(PONG.gameScreenList[i].graphics[0]);
+            console.log(vertices);
             gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
             PONG.gameScreenList[i].buffer.numItems = vertices.length / 3;
         };
@@ -105,6 +108,7 @@ PONG.WebGL3DRenderer = function() {
 
         for (var i = 0, j = PONG.titles.GAME_OVER.graphics.length; i < j; i++) {
             vertices = vertices.concat(rectToVertices(PONG.titles.GAME_OVER.graphics[i]));
+            //console.log(vertices);
         };
         
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
@@ -121,6 +125,24 @@ PONG.WebGL3DRenderer = function() {
     },
     
     init = function() {
+        
+        PONG.vars = {
+            translX: 241,
+            translY: 121,
+            translZ: 0,
+            rotationX: 31,
+            rotationY: 92,
+            rotationZ: 47
+        };
+        
+        var gui = new dat.GUI();
+        gui.add(PONG.vars, "translX").min(0).max(600);
+        gui.add(PONG.vars, "translY").min(0).max(446);
+        gui.add(PONG.vars, "translZ").min(0).max(600);
+        gui.add(PONG.vars, "rotationX").min(0).max(180);
+        gui.add(PONG.vars, "rotationY").min(0).max(180);
+        gui.add(PONG.vars, "rotationZ").min(0).max(180);
+        
         stage = document.createElement("canvas");
         stage.setAttribute("width", window.innerWidth + "px");
         stage.setAttribute("height", window.innerHeight + "px");
@@ -227,40 +249,39 @@ PONG.WebGL3DRenderer = function() {
     },
     
     matrix4x4Multiply = function (a, b) {
-      var a00 = a[0*4+0],
-          a01 = a[0*4+1],
-          a02 = a[0*4+2],
-          a03 = a[0*4+3],
-          a10 = a[1*4+0],
-          a11 = a[1*4+1],
-          a12 = a[1*4+2],
-          a13 = a[1*4+3],
-          a20 = a[2*4+0],
-          a21 = a[2*4+1],
-          a22 = a[2*4+2],
-          a23 = a[2*4+3],
-          a30 = a[3*4+0],
-          a31 = a[3*4+1],
-          a32 = a[3*4+2],
-          a33 = a[3*4+3],
-          b00 = b[0*4+0],
-          b01 = b[0*4+1],
-          b02 = b[0*4+2],
-          b03 = b[0*4+3],
-          b10 = b[1*4+0],
-          b11 = b[1*4+1],
-          b12 = b[1*4+2],
-          b13 = b[1*4+3],
-          b20 = b[2*4+0],
-          b21 = b[2*4+1],
-          b22 = b[2*4+2],
-          b23 = b[2*4+3],
-          b30 = b[3*4+0],
-          b31 = b[3*4+1],
-          b32 = b[3*4+2],
-          b33 = b[3*4+3];
-          
-      return [a00 * b00 + a01 * b10 + a02 * b20 + a03 * b30,
+        var a00 = a[0*4+0];
+  var a01 = a[0*4+1];
+  var a02 = a[0*4+2];
+  var a03 = a[0*4+3];
+  var a10 = a[1*4+0];
+  var a11 = a[1*4+1];
+  var a12 = a[1*4+2];
+  var a13 = a[1*4+3];
+  var a20 = a[2*4+0];
+  var a21 = a[2*4+1];
+  var a22 = a[2*4+2];
+  var a23 = a[2*4+3];
+  var a30 = a[3*4+0];
+  var a31 = a[3*4+1];
+  var a32 = a[3*4+2];
+  var a33 = a[3*4+3];
+  var b00 = b[0*4+0];
+  var b01 = b[0*4+1];
+  var b02 = b[0*4+2];
+  var b03 = b[0*4+3];
+  var b10 = b[1*4+0];
+  var b11 = b[1*4+1];
+  var b12 = b[1*4+2];
+  var b13 = b[1*4+3];
+  var b20 = b[2*4+0];
+  var b21 = b[2*4+1];
+  var b22 = b[2*4+2];
+  var b23 = b[2*4+3];
+  var b30 = b[3*4+0];
+  var b31 = b[3*4+1];
+  var b32 = b[3*4+2];
+  var b33 = b[3*4+3];
+  return [a00 * b00 + a01 * b10 + a02 * b20 + a03 * b30,
           a00 * b01 + a01 * b11 + a02 * b21 + a03 * b31,
           a00 * b02 + a01 * b12 + a02 * b22 + a03 * b32,
           a00 * b03 + a01 * b13 + a02 * b23 + a03 * b33,
@@ -275,8 +296,7 @@ PONG.WebGL3DRenderer = function() {
           a30 * b00 + a31 * b10 + a32 * b20 + a33 * b30,
           a30 * b01 + a31 * b11 + a32 * b21 + a33 * b31,
           a30 * b02 + a31 * b12 + a32 * b22 + a33 * b32,
-          a30 * b03 + a31 * b13 + a32 * b23 + a33 * b33
-         ];
+          a30 * b03 + a31 * b13 + a32 * b23 + a33 * b33];
         
     }, 
     
@@ -289,7 +309,12 @@ PONG.WebGL3DRenderer = function() {
         
         for(var i=0,j=entitiesArray.length; i<j; i++){
           var buffer,
-          transformMatrix;
+              transformMatrix,
+              translationMatrix,
+              rotationXMatrix,
+              rotationYMatrix,
+              rotationZMatrix,
+              scaleMatrix;
           
           buffer = entitiesArray[i].buffer;         
           gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
@@ -297,36 +322,36 @@ PONG.WebGL3DRenderer = function() {
           gl.enableVertexAttribArray(positionLocation);
           gl.vertexAttribPointer(positionLocation, 3, gl.FLOAT, false, 0, 0);
           gl.uniform4f(colorLocation, entitiesArray[i].rgba.r/255, entitiesArray[i].rgba.g/255, entitiesArray[i].rgba.b/255, entitiesArray[i].rgba.a/255);
-
-
-          transformMatrix = matrix4x4Multiply(
-              getScaleMatrix(entitiesArray[i].scale),
-              getTranslationMatrix([45, 150, 0])
-              //getTranslationMatrix(entitiesArray[i].translation)
-          );
+            
+            
+          var trans = [
+            PONG.vars.translX + entitiesArray[i].translation[0],
+            PONG.vars.translY + entitiesArray[i].translation[1],
+            PONG.vars.translZ + entitiesArray[i].translation[2]
+          ];
           
-          transformMatrix = matrix4x4Multiply(
-              transformMatrix,
-              getXRotationMatrix([Math.sin(40), Math.cos(40)])
-              //getXRotationMatrix(entitiesArray[i].rotation)
-          );
+            
+          translationMatrix = getTranslationMatrix(trans);
+          rotationXMatrix = getXRotationMatrix([Math.sin(PONG.vars.rotationX * Math.PI / 360), Math.cos(PONG.vars.rotationX * Math.PI / 360)]);
+          rotationYMatrix = getYRotationMatrix([Math.sin(PONG.vars.rotationY * Math.PI / 360), Math.cos(PONG.vars.rotationY * Math.PI / 360)]);
+          rotationZMatrix = getZRotationMatrix([Math.sin(PONG.vars.rotationZ * Math.PI / 360), Math.cos(PONG.vars.rotationZ * Math.PI / 360)]);
+          scaleMatrix = getScaleMatrix(entitiesArray[i].scale);
           
-          transformMatrix = matrix4x4Multiply(
-              transformMatrix,
-              getYRotationMatrix([Math.sin(25), Math.cos(25)])
-              //getYRotationMatrix(entitiesArray[i].rotation)
-          );
           
-          transformMatrix = matrix4x4Multiply(
-              transformMatrix,
-              getZRotationMatrix([Math.sin(325), Math.cos(325)])
-              //getZRotationMatrix(entitiesArray[i].rotation)
-          );
+          transformMatrix = matrix4x4Multiply(scaleMatrix, rotationZMatrix);
+          transformMatrix = matrix4x4Multiply(transformMatrix, rotationYMatrix);
+          transformMatrix = matrix4x4Multiply(transformMatrix, rotationXMatrix);
+          transformMatrix = matrix4x4Multiply(transformMatrix, translationMatrix);
+          transformMatrix = matrix4x4Multiply(transformMatrix, projection2D);
           
-          transformMatrix = matrix4x4Multiply(
-              transformMatrix,
-              projection2D
-          );
+          //getTranslationMatrix(entitiesArray[i].translation)
+          //getXRotationMatrix(entitiesArray[i].rotation)
+          //getYRotationMatrix(entitiesArray[i].rotation)
+          //getZRotationMatrix(entitiesArray[i].rotation)
+          
+          
+          
+         
           
           gl.uniformMatrix4fv(matrixLocation, false, transformMatrix);
           gl.drawArrays(gl.TRIANGLES, 0, buffer.numItems);
