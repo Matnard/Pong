@@ -16,15 +16,56 @@ PONG.WebGL3DRenderer = function() {
             x2 = rect.x + rect.width,
             y1 = rect.y,
             y2 = rect.y + rect.height,
-            z  = 0;
+            z  = rect.z;
 
         return [
+            //front face
+            x1, y1, 0,
+            x2, y1, 0,
+            x1, y2, 0,
+            x1, y2, 0,
+            x2, y1, 0,
+            x2, y2, 0,
+            
+            //rear face
             x1, y1, z,
             x2, y1, z,
             x1, y2, z,
             x1, y2, z,
             x2, y1, z,
-            x2, y2, z
+            x2, y2, z,
+            
+            //top face
+            x1, y1, z,
+            x2, y1, z,
+            x1, y1, 0,
+            x1, y1, 0,
+            x2, y1, z,
+            x2, y1, z,
+            
+            //bottom face
+            x1, y2, z,
+            x2, y2, z,
+            x1, y2, 0,
+            x1, y2, 0,
+            x2, y2, z,
+            x2, y2, z,
+            
+            //left face
+            x1, y1, z,
+            x1, y1, 0,
+            x1, y2, z,
+            x1, y2, z,
+            x1, y1, 0,
+            x1, y2, 0,
+            
+            //right face
+            x2, y1, z,
+            x2, y1, 0,
+            x2, y2, z,
+            x2, y2, z,
+            x2, y1, 0,
+            x2, y2, 0
         ];
     }, 
     
@@ -69,7 +110,8 @@ PONG.WebGL3DRenderer = function() {
             PONG.backgroundList[i].buffer = gl.createBuffer();  
             gl.bindBuffer(gl.ARRAY_BUFFER, PONG.backgroundList[i].buffer);
             vertices = rectToVertices(PONG.backgroundList[i].graphics[0]);
-            console.log(vertices);
+            console.log(vertices.length, vertices.length/3);
+            
             gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
             PONG.backgroundList[i].buffer.numItems = vertices.length / 3;
         };
@@ -83,8 +125,6 @@ PONG.WebGL3DRenderer = function() {
         for (var i = 0, j = PONG.titles.INTRO.graphics.length; i < j; i++) {
             vertices = vertices.concat(rectToVertices(PONG.titles.INTRO.graphics[i]));
         };
-        console.log(vertices);
-        
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
         PONG.titles.INTRO.buffer.numItems = vertices.length / 3;
     }, 
@@ -95,7 +135,6 @@ PONG.WebGL3DRenderer = function() {
             PONG.gameScreenList[i].buffer = gl.createBuffer();
             gl.bindBuffer(gl.ARRAY_BUFFER, PONG.gameScreenList[i].buffer);
             vertices = rectToVertices(PONG.gameScreenList[i].graphics[0]);
-            console.log(vertices);
             gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
             PONG.gameScreenList[i].buffer.numItems = vertices.length / 3;
         };
@@ -127,12 +166,12 @@ PONG.WebGL3DRenderer = function() {
     init = function() {
         
         PONG.vars = {
-            translX: 241,
-            translY: 121,
-            translZ: 0,
-            rotationX: 31,
-            rotationY: 92,
-            rotationZ: 47
+            translX: 293,
+            translY: 218,
+            translZ: 338,
+            rotationX: 35,
+            rotationY: 37,
+            rotationZ: 25
         };
         
         var gui = new dat.GUI();

@@ -1,6 +1,7 @@
 PONG.Rect = function(x, y, width, height, color, rgba){
     this._x = x || 0;
     this._y = y || 0;
+    this._z = 13;
     this._width = width || 0;
     this._height = height || 0;
     //TODO: parse # or rgba() get a string
@@ -31,6 +32,15 @@ Object.defineProperty(PONG.Rect.prototype, 'y', {
     set: function(value) {
         this._Ty = value - this._y;
         this._y = value;
+    }
+});
+
+Object.defineProperty(PONG.Rect.prototype, 'z', {
+    get: function() {
+        return this._z;
+    },
+    set: function(value) {
+        this._z = value;
     }
 });
 

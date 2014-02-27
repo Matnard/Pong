@@ -2,7 +2,7 @@ PONG.Entity = function(x, y, width, height, color, rgba){
     this.graphics = [];
     this._x = x || 0;
     this._y = y || 0;
-    this._z = 0;
+    this._z = 13;
     this._width = width || 0;
     this._height = height || 0;
     this._depth = 0;
@@ -53,7 +53,10 @@ Object.defineProperty(PONG.Entity.prototype, 'z', {
     get: function() {
         return this._z;
     },
-    set: function(value) {        
+    set: function(value) {  
+        for(var i=0,j=this.graphics.length; i<j; i++){
+            this.graphics[i].z = value - this._z;
+        };      
         this._z = value;
     }
 });
