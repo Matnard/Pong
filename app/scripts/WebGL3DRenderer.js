@@ -49,7 +49,7 @@ PONG.WebGL3DRenderer = function() {
             x1, y2, 0,
             x1, y2, 0,
             x2, y2, z,
-            x2, y2, z,
+            x2, y2, 0,
             
             //left face
             x1, y1, z,
@@ -350,6 +350,11 @@ PONG.WebGL3DRenderer = function() {
           transformMatrix = matrix4x4Multiply(transformMatrix, projection2D);
           
           gl.uniformMatrix4fv(matrixLocation, false, transformMatrix);
+
+          //gl.drawArrays(gl.LINE_STRIP, 0, buffer.numItems);
+          //gl.drawArrays(gl.LINES, 0, buffer.numItems);
+          //gl.drawArrays(gl.POINTS, 0, buffer.numItems);
+          //gl.drawArrays(gl.TRIANGLE_STRIP, 0, buffer.numItems);
           gl.drawArrays(gl.TRIANGLES, 0, buffer.numItems);
         };
     },
