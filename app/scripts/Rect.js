@@ -13,7 +13,6 @@ PONG.Rect = function(x, y, width, height, color, rgba){
         b: 255,
         a: 255
     };
-    this.type = PONG.types.RECT;
 };
 
 Object.defineProperty(PONG.Rect.prototype, 'x', {

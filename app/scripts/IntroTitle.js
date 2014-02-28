@@ -1,6 +1,5 @@
 PONG.IntroTitle = function(){
     PONG.Entity.apply(this, arguments);
-    this.type = PONG.types.INTRO_TITLE;
     this.graphics = [
         //P
         new PONG.Rect(0,0,23,71, this.color),

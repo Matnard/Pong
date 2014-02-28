@@ -104,53 +104,17 @@ PONG.WebGL3DRenderer = function() {
         return shader;
     }, 
     
-    initSceneBuffers = function() {
-        for (var i = 0, j = PONG.backgroundList.length; i < j; i++) {
-            var vertices;
-            PONG.backgroundList[i].buffer = gl.createBuffer();  
-            gl.bindBuffer(gl.ARRAY_BUFFER, PONG.backgroundList[i].buffer);
-            vertices = rectToVertices(PONG.backgroundList[i].graphics[0]);            
-            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-            PONG.backgroundList[i].buffer.numItems = vertices.length / 3;
-        };
-    }, 
-    
-    initIntroBuffers = function() {
+    initEntityBuffer = function (entity) {
         var vertices = [];
-        PONG.titles.INTRO.buffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, PONG.titles.INTRO.buffer);
+        entity.buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, entity.buffer);
 
-        for (var i = 0, j = PONG.titles.INTRO.graphics.length; i < j; i++) {
-            vertices = vertices.concat(rectToVertices(PONG.titles.INTRO.graphics[i]));
+        for (var i = 0, j = entity.graphics.length; i < j; i++) {
+            vertices = vertices.concat(rectToVertices(entity.graphics[i]));
         };
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-        PONG.titles.INTRO.buffer.numItems = vertices.length / 3;
-    }, 
-    
-    initGameBuffers = function() {
-        for (var i = 0, j = PONG.gameScreenList.length; i < j; i++) {
-            var vertices;
-            PONG.gameScreenList[i].buffer = gl.createBuffer();
-            gl.bindBuffer(gl.ARRAY_BUFFER, PONG.gameScreenList[i].buffer);
-            vertices = rectToVertices(PONG.gameScreenList[i].graphics[0]);
-            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-            PONG.gameScreenList[i].buffer.numItems = vertices.length / 3;
-        };
-    }, 
-    
-    initGameOverBuffers = function() {
-        var vertices = [];
-        PONG.titles.GAME_OVER.buffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, PONG.titles.GAME_OVER.buffer);
-
-        for (var i = 0, j = PONG.titles.GAME_OVER.graphics.length; i < j; i++) {
-            vertices = vertices.concat(rectToVertices(PONG.titles.GAME_OVER.graphics[i]));
-            //console.log(vertices);
-        };
-        
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-        PONG.titles.GAME_OVER.buffer.numItems = vertices.length / 3;
-    }, 
+        entity.buffer.numItems = vertices.length / 3;
+    },
     
     make2DProjection = function(width, height, depth) {
       return [
@@ -163,10 +127,12 @@ PONG.WebGL3DRenderer = function() {
     
     init = function() {
         
+        var entities;
+        
         PONG.vars = {
-            translX: 600,
-            translY: 218,
-            translZ: 338,
+            translX: 0,
+            translY: 0,
+            translZ: 0,
             rotationX: 0,
             rotationY: 180,
             rotationZ: 0
@@ -215,11 +181,14 @@ PONG.WebGL3DRenderer = function() {
         positionLocation    = gl.getAttribLocation(program, "a_position");
         colorLocation       = gl.getUniformLocation(program, "u_color");
         matrixLocation      = gl.getUniformLocation(program, "u_matrix");
-
-        initSceneBuffers();
-        initIntroBuffers();
-        initGameBuffers();
-        initGameOverBuffers();
+        
+        
+        
+        entities = PONG.EntityCollection.pull();
+        
+        for(var i=0,j=entities.length; i<j; i++){
+          initEntityBuffer(entities[i]);
+        };
         
         projection2D = make2DProjection(stage.width, stage.height, stage.width);
     }(), 
@@ -286,64 +255,63 @@ PONG.WebGL3DRenderer = function() {
     },
     
     matrix4x4Multiply = function (a, b) {
-        var a00 = a[0*4+0];
-  var a01 = a[0*4+1];
-  var a02 = a[0*4+2];
-  var a03 = a[0*4+3];
-  var a10 = a[1*4+0];
-  var a11 = a[1*4+1];
-  var a12 = a[1*4+2];
-  var a13 = a[1*4+3];
-  var a20 = a[2*4+0];
-  var a21 = a[2*4+1];
-  var a22 = a[2*4+2];
-  var a23 = a[2*4+3];
-  var a30 = a[3*4+0];
-  var a31 = a[3*4+1];
-  var a32 = a[3*4+2];
-  var a33 = a[3*4+3];
-  var b00 = b[0*4+0];
-  var b01 = b[0*4+1];
-  var b02 = b[0*4+2];
-  var b03 = b[0*4+3];
-  var b10 = b[1*4+0];
-  var b11 = b[1*4+1];
-  var b12 = b[1*4+2];
-  var b13 = b[1*4+3];
-  var b20 = b[2*4+0];
-  var b21 = b[2*4+1];
-  var b22 = b[2*4+2];
-  var b23 = b[2*4+3];
-  var b30 = b[3*4+0];
-  var b31 = b[3*4+1];
-  var b32 = b[3*4+2];
-  var b33 = b[3*4+3];
-  return [a00 * b00 + a01 * b10 + a02 * b20 + a03 * b30,
-          a00 * b01 + a01 * b11 + a02 * b21 + a03 * b31,
-          a00 * b02 + a01 * b12 + a02 * b22 + a03 * b32,
-          a00 * b03 + a01 * b13 + a02 * b23 + a03 * b33,
-          a10 * b00 + a11 * b10 + a12 * b20 + a13 * b30,
-          a10 * b01 + a11 * b11 + a12 * b21 + a13 * b31,
-          a10 * b02 + a11 * b12 + a12 * b22 + a13 * b32,
-          a10 * b03 + a11 * b13 + a12 * b23 + a13 * b33,
-          a20 * b00 + a21 * b10 + a22 * b20 + a23 * b30,
-          a20 * b01 + a21 * b11 + a22 * b21 + a23 * b31,
-          a20 * b02 + a21 * b12 + a22 * b22 + a23 * b32,
-          a20 * b03 + a21 * b13 + a22 * b23 + a23 * b33,
-          a30 * b00 + a31 * b10 + a32 * b20 + a33 * b30,
-          a30 * b01 + a31 * b11 + a32 * b21 + a33 * b31,
-          a30 * b02 + a31 * b12 + a32 * b22 + a33 * b32,
-          a30 * b03 + a31 * b13 + a32 * b23 + a33 * b33];
+        var a00 = a[0*4+0],
+            a01 = a[0*4+1],
+            a02 = a[0*4+2],
+            a03 = a[0*4+3],
+            a10 = a[1*4+0],
+            a11 = a[1*4+1],
+            a12 = a[1*4+2],
+            a13 = a[1*4+3],
+            a20 = a[2*4+0],
+            a21 = a[2*4+1],
+            a22 = a[2*4+2],
+            a23 = a[2*4+3],
+            a30 = a[3*4+0],
+            a31 = a[3*4+1],
+            a32 = a[3*4+2],
+            a33 = a[3*4+3],
+            b00 = b[0*4+0],
+            b01 = b[0*4+1],
+            b02 = b[0*4+2],
+            b03 = b[0*4+3],
+            b10 = b[1*4+0],
+            b11 = b[1*4+1],
+            b12 = b[1*4+2],
+            b13 = b[1*4+3],
+            b20 = b[2*4+0],
+            b21 = b[2*4+1],
+            b22 = b[2*4+2],
+            b23 = b[2*4+3],
+            b30 = b[3*4+0],
+            b31 = b[3*4+1],
+            b32 = b[3*4+2],
+            b33 = b[3*4+3];
+            
+        return [
+            a00 * b00 + a01 * b10 + a02 * b20 + a03 * b30,
+            a00 * b01 + a01 * b11 + a02 * b21 + a03 * b31,
+            a00 * b02 + a01 * b12 + a02 * b22 + a03 * b32,
+            a00 * b03 + a01 * b13 + a02 * b23 + a03 * b33,
+            a10 * b00 + a11 * b10 + a12 * b20 + a13 * b30,
+            a10 * b01 + a11 * b11 + a12 * b21 + a13 * b31,
+            a10 * b02 + a11 * b12 + a12 * b22 + a13 * b32,
+            a10 * b03 + a11 * b13 + a12 * b23 + a13 * b33,
+            a20 * b00 + a21 * b10 + a22 * b20 + a23 * b30,
+            a20 * b01 + a21 * b11 + a22 * b21 + a23 * b31,
+            a20 * b02 + a21 * b12 + a22 * b22 + a23 * b32,
+            a20 * b03 + a21 * b13 + a22 * b23 + a23 * b33,
+            a30 * b00 + a31 * b10 + a32 * b20 + a33 * b30,
+            a30 * b01 + a31 * b11 + a32 * b21 + a33 * b31,
+            a30 * b02 + a31 * b12 + a32 * b22 + a33 * b32,
+            a30 * b03 + a31 * b13 + a32 * b23 + a33 * b33
+        ];
         
     }, 
     
     
     drawEntities = function (entitiesArray){
-        
-        if(!Array.isArray(entitiesArray)){
-            entitiesArray = [entitiesArray];
-        }
-        
+
         for(var i=0,j=entitiesArray.length; i<j; i++){
           var buffer,
               transformMatrix,
@@ -381,15 +349,6 @@ PONG.WebGL3DRenderer = function() {
           transformMatrix = matrix4x4Multiply(transformMatrix, translationMatrix);
           transformMatrix = matrix4x4Multiply(transformMatrix, projection2D);
           
-          //getTranslationMatrix(entitiesArray[i].translation)
-          //getXRotationMatrix(entitiesArray[i].rotation)
-          //getYRotationMatrix(entitiesArray[i].rotation)
-          //getZRotationMatrix(entitiesArray[i].rotation)
-          
-          
-          
-         
-          
           gl.uniformMatrix4fv(matrixLocation, false, transformMatrix);
           gl.drawArrays(gl.TRIANGLES, 0, buffer.numItems);
         };
@@ -399,23 +358,7 @@ PONG.WebGL3DRenderer = function() {
     render = function() {
         //clear
         gl.clear(gl.COLOR_BUFFER_BIT);
-        drawEntities(PONG.backgroundList);
-        
-        switch(PONG.currentScreen){
-            case PONG.screens.INTRO_SCREEN:{
-                drawEntities(PONG.titles.INTRO);
-                break;
-            }
-            case PONG.screens.GAME_SCREEN:{
-                drawEntities(PONG.gameScreenList);
-                break;
-            }
-            case PONG.screens.GAME_OVER_SCREEN:{
-                drawEntities(PONG.titles.GAME_OVER);
-                break;
-            }
-        }
-        
+        drawEntities(PONG.displayList);
     };
     
     return {
