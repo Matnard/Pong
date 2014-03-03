@@ -28,12 +28,12 @@ PONG.WebGL3DRenderer = function() {
             x2, y2, 0,
             
             //rear face
-            x1, y1, z,
-            x2, y1, z,
-            x1, y2, z,
-            x1, y2, z,
-            x2, y1, z,
-            x2, y2, z,
+            x2, y1, z, 
+            x1, y1, z, 
+            x2, y2, z, 
+            x2, y2, z, 
+            x1, y1, z, 
+            x1, y2, z, 
             
             //top face
             x1, y1, z,
@@ -41,31 +41,40 @@ PONG.WebGL3DRenderer = function() {
             x1, y1, 0,
             x1, y1, 0,
             x2, y1, z,
-            x2, y1, z,
+            x2, y1, 0,
             
             //bottom face
+            x2, y2, z,
             x1, y2, z,
-            x2, y2, z,
-            x1, y2, 0,
-            x1, y2, 0,
-            x2, y2, z,
             x2, y2, 0,
+            x2, y2, 0,
+            x1, y2, z,
+            x1 ,y2, 0,
+
+            
             
             //left face
-            x1, y1, z,
-            x1, y1, 0,
-            x1, y2, z,
-            x1, y2, z,
             x1, y1, 0,
             x1, y2, 0,
+            x1, y1, z,
+            
+            x1, y1, z,
+            x1, y2, 0,
+            x1, y2, z,
+          
+
             
             //right face
+            x2, y1, 0,
             x2, y1, z,
-            x2, y1, 0,
-            x2, y2, z,
-            x2, y2, z,
-            x2, y1, 0,
-            x2, y2, 0
+            x2, y2, 0,
+            x2, y2, 0,
+            x2, y1, z,
+            x2, y2, z
+
+
+            
+
         ];
     }, 
     
@@ -130,11 +139,11 @@ PONG.WebGL3DRenderer = function() {
         var entities;
         
         PONG.vars = {
-            translX: 0,
-            translY: 0,
+            translX: 449,
+            translY: 353,
             translZ: 0,
-            rotationX: 0,
-            rotationY: 180,
+            rotationX: 312,
+            rotationY: 507,
             rotationZ: 0
         };
         
@@ -142,9 +151,9 @@ PONG.WebGL3DRenderer = function() {
         gui.add(PONG.vars, "translX").min(0).max(600);
         gui.add(PONG.vars, "translY").min(0).max(446);
         gui.add(PONG.vars, "translZ").min(0).max(600);
-        gui.add(PONG.vars, "rotationX").min(0).max(180);
-        gui.add(PONG.vars, "rotationY").min(0).max(180);
-        gui.add(PONG.vars, "rotationZ").min(0).max(180);
+        gui.add(PONG.vars, "rotationX").min(0).max(720);
+        gui.add(PONG.vars, "rotationY").min(0).max(720);
+        gui.add(PONG.vars, "rotationZ").min(0).max(720);
         
         stage = document.createElement("canvas");
         stage.setAttribute("width", window.innerWidth + "px");
@@ -191,6 +200,9 @@ PONG.WebGL3DRenderer = function() {
         };
         
         projection2D = make2DProjection(stage.width, stage.height, stage.width);
+        
+        gl.enable(gl.CULL_FACE);
+        
     }(), 
     
     

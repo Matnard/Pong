@@ -46,7 +46,8 @@ PONG.IntroScreen = function(game) {
       PONG.instruction.display("press ENTER to play. Use W and S to move.");
       PONG.currentScreen = PONG.screens.INTRO_SCREEN; 
       PONG.displayList = PONG.EntityCollection.pull( PONG.categories.BACKGROUND ).concat(that.foregroundList);
-      //PONG.main.start(); //skip //TODO: remove       
+      //change z index
+      //PONG.displayList = that.foregroundList.concat( PONG.EntityCollection.pull( PONG.categories.BACKGROUND ) );
   };
 };
 
