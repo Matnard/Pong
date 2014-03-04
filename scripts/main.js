@@ -31,15 +31,11 @@ PONG.Game = function () {
 };
 
 PONG.IntroScreen = function(game) {
-  var that = this,
-  title = PONG.titles.INTRO;
+  var that = this;
   
   this.game = game;
-  this.foregroundList = []; 
-  
-  
-  this.foregroundList = this.foregroundList.concat(title);
-  
+  this.foregroundList = PONG.EntityCollection.pull( PONG.categories.INTRO );
+   
   this.onEvent = function (event) {
       if(event == PONG.event.START){
           game.setNextScreen( new PONG.GameScreen(game) );
@@ -49,14 +45,14 @@ PONG.IntroScreen = function(game) {
   this.run = function () {
       PONG.instruction.display("press ENTER to play. Use W and S to move.");
       PONG.currentScreen = PONG.screens.INTRO_SCREEN; 
-      PONG.displayList = PONG.backgroundList.concat(that.foregroundList);
-      //PONG.main.start(); //skip //TODO: remove       
+      PONG.displayList = PONG.EntityCollection.pull( PONG.categories.BACKGROUND ).concat(that.foregroundList);
+      //change z index
+      //PONG.displayList = that.foregroundList.concat( PONG.EntityCollection.pull( PONG.categories.BACKGROUND ) );
   };
 };
 
 PONG.GameScreen = function(game) {
   this.game = game;
-  this.foregroundList = [];
 
   this.onEvent = function (event) {
       if(event == PONG.event.DIE){
@@ -64,18 +60,18 @@ PONG.GameScreen = function(game) {
       }
   };
   this.run = function () {
-      PONG.displayList = PONG.backgroundList.concat( PONG.gameScreenList );
+      var bg = PONG.EntityCollection.pull( PONG.categories.BACKGROUND ),
+          gameEntities = PONG.EntityCollection.pull( PONG.categories.GAME_ENTITIES );
+      PONG.displayList = bg.concat(gameEntities);
       PONG.currentScreen = PONG.screens.GAME_SCREEN;
   };
 };
 
 PONG.GameOverScreen = function(game) {
-  var that = this,
-  title = PONG.titles.GAME_OVER;
+  var that = this;
 
   this.game = game;
-  this.foregroundList = []; 
-  this.foregroundList = this.foregroundList.concat(title);
+  this.foregroundList = PONG.EntityCollection.pull( PONG.categories.OUTRO );
    
   this.onEvent = function (event) {
     if(event == PONG.event.START_OVER){
@@ -85,7 +81,7 @@ PONG.GameOverScreen = function(game) {
   this.run = function () {
       PONG.instruction.display("press ENTER to play.");
       PONG.currentScreen = PONG.screens.GAME_OVER_SCREEN;
-      PONG.displayList = PONG.backgroundList.concat(that.foregroundList);
+      PONG.displayList = PONG.EntityCollection.pull( PONG.categories.BACKGROUND ).concat(that.foregroundList);
   };
 };
 
@@ -100,6 +96,8 @@ PONG.main = function (){
         ball,
         player1,
         player2,
+        introEntity,
+        outroEntity,
         
         score = {
             player1: 0,
@@ -213,7 +211,7 @@ PONG.main = function (){
                 updateGame();
             }
             stats.end();
-            //requestAnimationFrame(onEnterFrame);
+            requestAnimationFrame(onEnterFrame);
         },
         
         start = function () {
@@ -245,10 +243,8 @@ PONG.main = function (){
         },
         
         reset = function(){
-            //debugger;
-            console.log("reset game position");
-            PONG.titles.INTRO.x = 140;
-            PONG.titles.INTRO.y = 150;
+            introEntity.x = 140;
+            introEntity.y = 150;
             
             
             player1.x = 0;
@@ -262,31 +258,36 @@ PONG.main = function (){
 
             bottomBound.y = PONG.stageHeight - bottomBound.height;
 
-            PONG.titles.GAME_OVER.x = 90;
-            PONG.titles.GAME_OVER.y = 150;
+            outroEntity.x = 90;
+            outroEntity.y = 150;
 
             resetScore();
         },
         
         init = function () {
             
-            PONG.titles.INTRO = new PONG.IntroTitle();
-            PONG.titles.GAME_OVER = new PONG.OutroTitle();
+            introEntity = new PONG.IntroTitle();
+            PONG.EntityCollection.push(introEntity, PONG.categories.INTRO);
+            
+            outroEntity = new PONG.OutroTitle();
+            PONG.EntityCollection.push(outroEntity, PONG.categories.OUTRO);
+            
             topBound = new PONG.Bound();
             bottomBound = new PONG.Bound();
             scene = new PONG.Scene();
-            PONG.backgroundList.push(scene);
-            PONG.backgroundList.push(bottomBound);
-            PONG.backgroundList.push(topBound);
+            
+            PONG.EntityCollection.push(scene, PONG.categories.BACKGROUND);
+            PONG.EntityCollection.push(bottomBound, PONG.categories.BACKGROUND);
+            PONG.EntityCollection.push(topBound, PONG.categories.BACKGROUND);
             
             ball = new PONG.Ball();
             player1 = new PONG.Paddle();
             player1.direction = 0;
             player2 = new PONG.Paddle();
             
-            PONG.gameScreenList.push(ball);
-            PONG.gameScreenList.push(player1);
-            PONG.gameScreenList.push(player2);
+            PONG.EntityCollection.push(ball, PONG.categories.GAME_ENTITIES);
+            PONG.EntityCollection.push(player1, PONG.categories.GAME_ENTITIES);
+            PONG.EntityCollection.push(player2, PONG.categories.GAME_ENTITIES);
             
             TOP_COLLISION_LINE = topBound.height;
             BOTTOM_COLLISION_LINE = PONG.stageHeight - bottomBound.height;
@@ -343,8 +344,8 @@ PONG.main = function (){
             game = new PONG.Game();
             game.start();
             
-            //requestAnimationFrame(onEnterFrame);
-            setInterval( onEnterFrame, 1000 / 60 );
+            requestAnimationFrame(onEnterFrame);
+            //setInterval( onEnterFrame, 1000 / 60 );
         };
         
     document.addEventListener('DOMContentLoaded', function(){

@@ -6,9 +6,6 @@ PONG.WebGLRenderer = function() {
     program, 
     positionLocation, 
     colorLocation, 
-    /*translationLocation,
-    rotationLocation,
-    scaleLocation,*/
     matrixLocation,
     resolutionLocation,
     projection2D;
@@ -62,63 +59,19 @@ PONG.WebGLRenderer = function() {
         }
 
         return shader;
-    }, 
+    },  
     
-    initSceneBuffers = function() {
-        for (var i = 0, j = PONG.backgroundList.length; i < j; i++) {
-            var vertices;
-            PONG.backgroundList[i].buffer = gl.createBuffer();  
-            gl.bindBuffer(gl.ARRAY_BUFFER, PONG.backgroundList[i].buffer);
-            //PONG.backgroundList[i].graphics[0].x = 0;
-            //PONG.backgroundList[i].graphics[0].y = 0;
-            vertices = rectToVertices(PONG.backgroundList[i].graphics[0]);
-            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-            PONG.backgroundList[i].buffer.numItems = vertices.length * 0.5;
-        };
-    }, 
-    
-    initIntroBuffers = function() {
+    initEntityBuffer = function (entity) {
         var vertices = [];
-        PONG.titles.INTRO.buffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, PONG.titles.INTRO.buffer);
+        entity.buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, entity.buffer);
 
-        for (var i = 0, j = PONG.titles.INTRO.graphics.length; i < j; i++) {
-            //PONG.titles.INTRO.graphics[i].x = 0;
-            //PONG.titles.INTRO.graphics[i].y = 0;
-            vertices = vertices.concat(rectToVertices(PONG.titles.INTRO.graphics[i]));
+        for (var i = 0, j = entity.graphics.length; i < j; i++) {
+            vertices = vertices.concat(rectToVertices(entity.graphics[i]));
         };
-        
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-        PONG.titles.INTRO.buffer.numItems = vertices.length * 0.5;
-    }, 
-    
-    initGameBuffers = function() {
-        for (var i = 0, j = PONG.gameScreenList.length; i < j; i++) {
-            var vertices;
-            PONG.gameScreenList[i].buffer = gl.createBuffer();
-            gl.bindBuffer(gl.ARRAY_BUFFER, PONG.gameScreenList[i].buffer);
-            //PONG.gameScreenList[i].graphics[0].x = 0;
-            //PONG.gameScreenList[i].graphics[0].y = 0;
-            vertices = rectToVertices(PONG.gameScreenList[i].graphics[0]);
-            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-            PONG.gameScreenList[i].buffer.numItems = vertices.length * 0.5;
-        };
-    }, 
-    
-    initGameOverBuffers = function() {
-        var vertices = [];
-        PONG.titles.GAME_OVER.buffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, PONG.titles.GAME_OVER.buffer);
-
-        for (var i = 0, j = PONG.titles.GAME_OVER.graphics.length; i < j; i++) {
-            //PONG.titles.GAME_OVER.graphics[i].x = 0;
-            //PONG.titles.GAME_OVER.graphics[i].y = 0;
-            vertices = vertices.concat(rectToVertices(PONG.titles.GAME_OVER.graphics[i]));
-        };
-        
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-        PONG.titles.GAME_OVER.buffer.numItems = vertices.length * 0.5;
-    }, 
+        entity.buffer.numItems = vertices.length *0.5;
+    },
     
     make2DProjection = function(width, height) {
       return [
@@ -129,6 +82,8 @@ PONG.WebGLRenderer = function() {
     },
     
     init = function() {
+        var entities;
+        
         stage = document.createElement("canvas");
         stage.setAttribute("width", window.innerWidth + "px");
         stage.setAttribute("height", window.innerHeight + "px");
@@ -166,18 +121,15 @@ PONG.WebGLRenderer = function() {
         colorLocation       = gl.getUniformLocation(program, "u_color");
         
         matrixLocation             = gl.getUniformLocation(program, "u_matrix");
-        //gl.uniform2f(resolutionLocation, stage.width, stage.height);
 
-        initSceneBuffers();
-        initIntroBuffers();
-        initGameBuffers();
-        initGameOverBuffers();
+        entities = PONG.EntityCollection.pull();
+        
+        for(var i=0,j=entities.length; i<j; i++){
+          initEntityBuffer(entities[i]);
+        };
         
         projection2D = make2DProjection(stage.width, stage.height);
     }(), 
-    
-    
-    
     
     getTranslationMatrix = function (translation) {
       var tx = translation[0],
@@ -244,10 +196,6 @@ PONG.WebGLRenderer = function() {
     
     drawEntities = function (entitiesArray){
         
-        if(!Array.isArray(entitiesArray)){
-            entitiesArray = [entitiesArray];
-        }
-        
         for(var i=0,j=entitiesArray.length; i<j; i++){
           var buffer,
           transformMatrix;
@@ -280,23 +228,7 @@ PONG.WebGLRenderer = function() {
     render = function() {
         //clear
         gl.clear(gl.COLOR_BUFFER_BIT);
-        drawEntities(PONG.backgroundList);
-        
-        switch(PONG.currentScreen){
-            case PONG.screens.INTRO_SCREEN:{
-                drawEntities(PONG.titles.INTRO);
-                break;
-            }
-            case PONG.screens.GAME_SCREEN:{
-                drawEntities(PONG.gameScreenList);
-                break;
-            }
-            case PONG.screens.GAME_OVER_SCREEN:{
-                drawEntities(PONG.titles.GAME_OVER);
-                break;
-            }
-        }
-        
+        drawEntities(PONG.displayList);        
     };
     
     return {

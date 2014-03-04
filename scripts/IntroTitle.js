@@ -1,6 +1,5 @@
 PONG.IntroTitle = function(){
     PONG.Entity.apply(this, arguments);
-    this.type = PONG.types.INTRO_TITLE;
     this.graphics = [
         //P
         new PONG.Rect(0,0,23,71, this.color),
@@ -37,7 +36,7 @@ PONG.IntroTitle = function(){
        new PONG.Rect(30,60,37,30, this.color)*/
        
     ];
-    this.z = 13;
+    this.z = 0;
 };
 
 PONG.IntroTitle.prototype = Object.create( PONG.Entity.prototype );

@@ -18,7 +18,6 @@ PONG.Entity = function(x, y, width, height, color, rgba){
         b: 255,
         a: 255
     };
-    this.type = PONG.types.ENTITY;
 };
 
 Object.defineProperty(PONG.Entity.prototype, 'x', {

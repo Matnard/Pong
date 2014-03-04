@@ -7,9 +7,8 @@ PONG.Scene = function(){
         b: 214,
         a: 255
     };
-    this.type = PONG.types.SCENE;
     this.graphics = [new PONG.Rect(0,13,600,420, this.color, this.rgba)];
-    this.z = -13;
+    this.z = 14;
 };
 
 PONG.Scene.prototype = Object.create( PONG.Entity.prototype );

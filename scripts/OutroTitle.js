@@ -1,6 +1,5 @@
 PONG.OutroTitle = function(){
     PONG.Entity.apply(this, arguments);
-    this.type = PONG.types.GAME_OVER_TITLE;
     this.graphics = [
         //G
         new PONG.Rect(0,12,14,19, this.color), 
@@ -61,6 +60,8 @@ PONG.OutroTitle = function(){
         new PONG.Rect(402,30,20,7, this.color),
         new PONG.Rect(408,36,20,7, this.color)   
     ];
+    
+    this.z = 0;
 };
 
 PONG.OutroTitle.prototype = Object.create( PONG.Entity.prototype );
