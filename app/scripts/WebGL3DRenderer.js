@@ -139,21 +139,15 @@ PONG.WebGL3DRenderer = function() {
         var entities;
         
         PONG.vars = {
-            translX: 449,
-            translY: 353,
-            translZ: 0,
-            rotationX: 312,
-            rotationY: 507,
+            rotationX: 0,
+            rotationY: 0,
             rotationZ: 0
         };
         
         var gui = new dat.GUI();
-        gui.add(PONG.vars, "translX").min(0).max(600);
-        gui.add(PONG.vars, "translY").min(0).max(446);
-        gui.add(PONG.vars, "translZ").min(0).max(600);
-        gui.add(PONG.vars, "rotationX").min(0).max(720);
-        gui.add(PONG.vars, "rotationY").min(0).max(720);
-        gui.add(PONG.vars, "rotationZ").min(0).max(720);
+        gui.add(PONG.vars, "rotationX").min(0).max(360);
+        gui.add(PONG.vars, "rotationY").min(0).max(360);
+        gui.add(PONG.vars, "rotationZ").min(0).max(360);
         
         stage = document.createElement("canvas");
         stage.setAttribute("width", window.innerWidth + "px");
@@ -199,10 +193,11 @@ PONG.WebGL3DRenderer = function() {
           initEntityBuffer(entities[i]);
         };
         
-        projection2D = make2DProjection(stage.width, stage.height, stage.width);
+        projection2D = make2DProjection(stage.width, stage.height, stage.width*2);
+        
         
         gl.enable(gl.CULL_FACE);
-        
+        gl.enable(gl.DEPTH_TEST);
     }(), 
     
     
@@ -216,7 +211,7 @@ PONG.WebGL3DRenderer = function() {
          1,  0, 0, 0,
          0,  1, 0, 0,
          0,  0, 1, 0,
-        tx, ty, tz, 1, 
+         tx, ty, tz, 1, 
       ];
     },
     
@@ -322,11 +317,21 @@ PONG.WebGL3DRenderer = function() {
     }, 
     
     
+    getSinCos = function (angleInDegrees) {
+        var sin, cos;
+        
+        
+        return [sin, cos];
+    },
+    
     drawEntities = function (entitiesArray){
 
         for(var i=0,j=entitiesArray.length; i<j; i++){
           var buffer,
               transformMatrix,
+              moveOriginMatrix,
+              screenCenteringTranslation,
+              guiTranlsationMatrix,
               translationMatrix,
               rotationXMatrix,
               rotationYMatrix,
@@ -340,25 +345,22 @@ PONG.WebGL3DRenderer = function() {
           gl.vertexAttribPointer(positionLocation, 3, gl.FLOAT, false, 0, 0);
           gl.uniform4f(colorLocation, entitiesArray[i].rgba.r/255, entitiesArray[i].rgba.g/255, entitiesArray[i].rgba.b/255, entitiesArray[i].rgba.a/255);
             
-            
-          var trans = [
-            PONG.vars.translX + entitiesArray[i].translation[0],
-            PONG.vars.translY + entitiesArray[i].translation[1],
-            PONG.vars.translZ + entitiesArray[i].translation[2]
-          ];
-          
-            
-          translationMatrix = getTranslationMatrix(trans);
+          moveOriginMatrix = getTranslationMatrix([-300, -223, 0]);
+          screenCenteringTranslation = getTranslationMatrix([ 0.5*window.innerWidth, 0.5*window.innerHeight, 0.5*window.innerWidth]);
+          guiTranlsationMatrix = getTranslationMatrix([PONG.vars.translX, PONG.vars.translY, PONG.vars.translZ]);
+          translationMatrix = getTranslationMatrix(entitiesArray[i].translation);
           rotationXMatrix = getXRotationMatrix([Math.sin(PONG.vars.rotationX * Math.PI / 360), Math.cos(PONG.vars.rotationX * Math.PI / 360)]);
           rotationYMatrix = getYRotationMatrix([Math.sin(PONG.vars.rotationY * Math.PI / 360), Math.cos(PONG.vars.rotationY * Math.PI / 360)]);
           rotationZMatrix = getZRotationMatrix([Math.sin(PONG.vars.rotationZ * Math.PI / 360), Math.cos(PONG.vars.rotationZ * Math.PI / 360)]);
-          scaleMatrix = getScaleMatrix(entitiesArray[i].scale);
+          scaleMatrix = getScaleMatrix(entitiesArray[i].scale);//[0.2, 0.2, 0.2]);
           
           
-          transformMatrix = matrix4x4Multiply(scaleMatrix, rotationZMatrix);
+          transformMatrix = matrix4x4Multiply(moveOriginMatrix, translationMatrix);
+          transformMatrix = matrix4x4Multiply(transformMatrix, scaleMatrix);
+          transformMatrix = matrix4x4Multiply(transformMatrix, rotationZMatrix);
           transformMatrix = matrix4x4Multiply(transformMatrix, rotationYMatrix);
           transformMatrix = matrix4x4Multiply(transformMatrix, rotationXMatrix);
-          transformMatrix = matrix4x4Multiply(transformMatrix, translationMatrix);
+          transformMatrix = matrix4x4Multiply(transformMatrix, screenCenteringTranslation);
           transformMatrix = matrix4x4Multiply(transformMatrix, projection2D);
           
           gl.uniformMatrix4fv(matrixLocation, false, transformMatrix);
@@ -374,7 +376,8 @@ PONG.WebGL3DRenderer = function() {
     
     render = function() {
         //clear
-        gl.clear(gl.COLOR_BUFFER_BIT);
+        //gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         drawEntities(PONG.displayList);
     };
     

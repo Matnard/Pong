@@ -60,6 +60,8 @@ PONG.OutroTitle = function(){
         new PONG.Rect(402,30,20,7, this.color),
         new PONG.Rect(408,36,20,7, this.color)   
     ];
+    
+    this.z = 0;
 };
 
 PONG.OutroTitle.prototype = Object.create( PONG.Entity.prototype );
