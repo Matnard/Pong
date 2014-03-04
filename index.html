@@ -11,7 +11,11 @@
         <title>pong</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=640, user-scalable=no">
-        
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+        <!-- build:css styles/vendor.css -->
+        <!-- bower:css -->
+        <!-- endbower -->
+        <!-- endbuild -->
         <style>
             body {
                 margin: 0;/*1500px 0 0 0;*/
@@ -31,7 +35,11 @@
         <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
 
-        
+        <!-- build:js scripts/vendor.js -->
+        <!-- bower:js -->
+        <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+        <!-- endbower -->
+        <!-- endbuild -->
         <span id="info"></span>
         <script id="shader-fs" type="x-shader/x-fragment">
             precision mediump float;
@@ -95,6 +103,7 @@
         <script src="scripts/WebGL3DRenderer.js"></script>
         <script src="scripts/Rect.js"></script>
         <script src="scripts/Entity.js"></script>
+        <script src="scripts/EntityCollection.js"></script>
         <script src="scripts/Bound.js"></script>
         <script src="scripts/Scene.js"></script>
         <script src="scripts/Ball.js"></script>
