@@ -6,10 +6,9 @@ PONG.WebGL3DRenderer = function() {
     program, 
     positionLocation, 
     colorLocation, 
-
+    aspect,
     matrixLocation,
-    resolutionLocation,
-    projection2D;
+    resolutionLocation;
 
     rectToVertices = function(rect) {
         var x1 = rect.x,
@@ -124,30 +123,35 @@ PONG.WebGL3DRenderer = function() {
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
         entity.buffer.numItems = vertices.length / 3;
     },
-    
-    make2DProjection = function(width, height, depth) {
-      return [
-         2 / width, 0, 0, 0,
-         0, -2 / height, 0, 0,
-         0, 0, 2 / depth, 0,
-        -1, 1, 0, 1,
-      ];
-    },
-    
+
     init = function() {
         
         var entities;
         
         PONG.vars = {
-            rotationX: 0,
+            rotationX: -180,
             rotationY: 0,
-            rotationZ: 0
+            rotationZ: 0,
+            translX: 0,
+            translY: 0,
+            translZ: -493,
+            fieldOfViewRadians: 70
         };
         
         var gui = new dat.GUI();
-        gui.add(PONG.vars, "rotationX").min(0).max(360);
-        gui.add(PONG.vars, "rotationY").min(0).max(360);
-        gui.add(PONG.vars, "rotationZ").min(0).max(360);
+        var f1 = gui.addFolder('Rotations');
+        f1.add(PONG.vars, "rotationX").min(-180).max(180);
+        f1.add(PONG.vars, "rotationY").min(-180).max(180);
+        f1.add(PONG.vars, "rotationZ").min(-180).max(180);
+        
+        var f2 = gui.addFolder('Translations');
+        f2.add(PONG.vars, "translX").min(-200).max(200);
+        f2.add(PONG.vars, "translY").min(-200).max(200);
+        f2.add(PONG.vars, "translZ").min(-1000).max(0);
+        gui.add(PONG.vars, "fieldOfViewRadians").min(1).max(179);
+        
+        f1.open();
+        f2.open();
         
         stage = document.createElement("canvas");
         stage.setAttribute("width", window.innerWidth + "px");
@@ -166,6 +170,9 @@ PONG.WebGL3DRenderer = function() {
 
         gl.viewportWidth = stage.width;
         gl.viewportHeight = stage.height;
+        
+        aspect = stage.width / stage.height;
+        
 
         vertexShader = getShader(gl, "3d-vertex-shader");
         fragmentShader = getShader(gl, "shader-fs");
@@ -186,14 +193,13 @@ PONG.WebGL3DRenderer = function() {
         matrixLocation      = gl.getUniformLocation(program, "u_matrix");
         
         
-        
         entities = PONG.EntityCollection.pull();
         
         for(var i=0,j=entities.length; i<j; i++){
           initEntityBuffer(entities[i]);
         };
         
-        projection2D = make2DProjection(stage.width, stage.height, stage.width*2);
+        //projection2D = make2DProjection(stage.width, stage.height, stage.width*2);
         
         
         gl.enable(gl.CULL_FACE);
@@ -259,6 +265,27 @@ PONG.WebGL3DRenderer = function() {
         0,  0, sz,  0,
         0,  0,  0,  1,
       ];
+    },
+    
+    makeZToWMatrix = function (fudgeFactor) {
+        return [
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, fudgeFactor,
+            0, 0, 0, 1,
+        ];
+    },
+    
+    makePerspective = function (fieldOfViewInRadians, aspect, near, far) {
+        var f = Math.tan(Math.PI * 0.5 - 0.5 * fieldOfViewInRadians ),
+        rangeInv = 1.0 / (near - far);
+         
+        return [
+            f / aspect, 0, 0, 0,
+            0, f, 0, 0,
+            0, 0, (near + far) * rangeInv, -1,
+            0, 0, near * far * rangeInv * 2, 0
+        ];
     },
     
     matrix4x4Multiply = function (a, b) {
@@ -336,7 +363,9 @@ PONG.WebGL3DRenderer = function() {
               rotationXMatrix,
               rotationYMatrix,
               rotationZMatrix,
-              scaleMatrix;
+              zToWMatrix,
+              scaleMatrix,
+              projectionMatrix;
           
           buffer = entitiesArray[i].buffer;         
           gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
@@ -348,20 +377,22 @@ PONG.WebGL3DRenderer = function() {
           moveOriginMatrix = getTranslationMatrix([-300, -223, 0]);
           screenCenteringTranslation = getTranslationMatrix([ 0.5*window.innerWidth, 0.5*window.innerHeight, 0.5*window.innerWidth]);
           guiTranlsationMatrix = getTranslationMatrix([PONG.vars.translX, PONG.vars.translY, PONG.vars.translZ]);
-          translationMatrix = getTranslationMatrix(entitiesArray[i].translation);
-          rotationXMatrix = getXRotationMatrix([Math.sin(PONG.vars.rotationX * Math.PI / 360), Math.cos(PONG.vars.rotationX * Math.PI / 360)]);
-          rotationYMatrix = getYRotationMatrix([Math.sin(PONG.vars.rotationY * Math.PI / 360), Math.cos(PONG.vars.rotationY * Math.PI / 360)]);
-          rotationZMatrix = getZRotationMatrix([Math.sin(PONG.vars.rotationZ * Math.PI / 360), Math.cos(PONG.vars.rotationZ * Math.PI / 360)]);
+          translationMatrix = getTranslationMatrix(entitiesArray[i].translation); 
+          rotationXMatrix = getXRotationMatrix([Math.sin(PONG.vars.rotationX * Math.PI / 180), Math.cos(PONG.vars.rotationX * Math.PI / 180)]);
+          rotationYMatrix = getYRotationMatrix([Math.sin(PONG.vars.rotationY * Math.PI / 180), Math.cos(PONG.vars.rotationY * Math.PI / 180)]);
+          rotationZMatrix = getZRotationMatrix([Math.sin(PONG.vars.rotationZ * Math.PI / 180), Math.cos(PONG.vars.rotationZ * Math.PI / 180)]);
           scaleMatrix = getScaleMatrix(entitiesArray[i].scale);//[0.2, 0.2, 0.2]);
-          
+          zToWMatrix = makeZToWMatrix(PONG.vars.fudgeFactor);
+          projectionMatrix = makePerspective(PONG.vars.fieldOfViewRadians * Math.PI / 180, aspect, 1, 2000);
           
           transformMatrix = matrix4x4Multiply(moveOriginMatrix, translationMatrix);
           transformMatrix = matrix4x4Multiply(transformMatrix, scaleMatrix);
           transformMatrix = matrix4x4Multiply(transformMatrix, rotationZMatrix);
           transformMatrix = matrix4x4Multiply(transformMatrix, rotationYMatrix);
           transformMatrix = matrix4x4Multiply(transformMatrix, rotationXMatrix);
-          transformMatrix = matrix4x4Multiply(transformMatrix, screenCenteringTranslation);
-          transformMatrix = matrix4x4Multiply(transformMatrix, projection2D);
+          //transformMatrix = matrix4x4Multiply(transformMatrix, screenCenteringTranslation);
+          transformMatrix = matrix4x4Multiply(transformMatrix, guiTranlsationMatrix);
+          transformMatrix = matrix4x4Multiply(transformMatrix, projectionMatrix);
           
           gl.uniformMatrix4fv(matrixLocation, false, transformMatrix);
 
