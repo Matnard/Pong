@@ -1,7 +1,7 @@
 3D Accelerated Pong
+====
 http://matnard.github.io/Pong/
 Press enter to start use W and S to move the paddle
-====
 
 - [x] Create a simple drawing API to create squares
 - [x] Render with DOM elements
