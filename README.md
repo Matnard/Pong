@@ -1,4 +1,6 @@
 3D Accelerated Pong
+http://matnard.github.io/Pong/
+Press enter to start use W and S to move the paddle
 ====
 
 - [x] Create a simple drawing API to create squares
@@ -14,3 +16,4 @@
 - [x] Render in webGL in 3D with 4x4 matrices
 - [ ] Implement a camera
 - [ ] Implement a light
+- [ ] Implement a bitmap font for instructions and points
