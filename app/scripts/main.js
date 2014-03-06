@@ -3,6 +3,7 @@ PONG.instruction = function () {
     
     display = function(message){
         console.log(message);
+        //alert(message);
         //info.innerHTML = message;
     };
     
@@ -38,12 +39,14 @@ PONG.IntroScreen = function(game) {
    
   this.onEvent = function (event) {
       if(event == PONG.event.START){
-          game.setNextScreen( new PONG.GameScreen(game) );
+          PONG.animation.goToSide(function(){
+            game.setNextScreen( new PONG.GameScreen(game) );
+          });
       }
   };
    
   this.run = function () {
-      PONG.instruction.display("press ENTER to play. Use W and S to move.");
+      PONG.instruction.display("press ENTER to play. Use A and D to move.");
       PONG.currentScreen = PONG.screens.INTRO_SCREEN; 
       PONG.displayList = PONG.EntityCollection.pull( PONG.categories.BACKGROUND ).concat(that.foregroundList);
       //change z index
@@ -56,7 +59,7 @@ PONG.GameScreen = function(game) {
 
   this.onEvent = function (event) {
       if(event == PONG.event.DIE){
-          game.setNextScreen( new PONG.GameOverScreen(game) );
+         game.setNextScreen( new PONG.GameOverScreen(game) );
       }
   };
   this.run = function () {
@@ -79,6 +82,7 @@ PONG.GameOverScreen = function(game) {
     }
   };
   this.run = function () {
+      PONG.animation.goToFront();
       PONG.instruction.display("press ENTER to play.");
       PONG.currentScreen = PONG.screens.GAME_OVER_SCREEN;
       PONG.displayList = PONG.EntityCollection.pull( PONG.categories.BACKGROUND ).concat(that.foregroundList);
@@ -277,8 +281,8 @@ PONG.main = function (){
             scene = new PONG.Scene();
             
             PONG.EntityCollection.push(scene, PONG.categories.BACKGROUND);
-            PONG.EntityCollection.push(bottomBound, PONG.categories.BACKGROUND);
-            PONG.EntityCollection.push(topBound, PONG.categories.BACKGROUND);
+            //PONG.EntityCollection.push(bottomBound, PONG.categories.BACKGROUND);
+            //PONG.EntityCollection.push(topBound, PONG.categories.BACKGROUND);
             
             ball = new PONG.Ball();
             player1 = new PONG.Paddle();
@@ -300,15 +304,15 @@ PONG.main = function (){
                 e = e || window.event;
                 var charCode = (typeof e.which == "number") ? e.which : e.keyCode;
                 if (charCode) {
-                                        
+                    console.log(charCode);  
                     switch(charCode){
                         case 13: {
                             if(PONG.currentScreen == PONG.screens.INTRO_SCREEN) start(); 
                             if(PONG.currentScreen == PONG.screens.GAME_OVER_SCREEN) startOver();
                             break;
                         }
-                        case 119: player1.direction = -1; break;
-                        case 115: player1.direction = 1; break;
+                        case 97: player1.direction = -1; break;
+                        case 100: player1.direction = 1; break;
                     }
                 }
             };

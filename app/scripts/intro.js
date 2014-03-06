@@ -40,5 +40,24 @@ var PONG = {
     displayList: []    
 };
 
+PONG.vars = {
+    rotationX: 180,
+    rotationY: 0,
+    rotationZ: 0,
+    translX: 0,
+    translY: 0,
+    translZ: -493,
+    fieldOfViewRadians: 70
+};
 
+PONG.animation = {
+  goToSide: function (callback) {
+    var tl = new TimelineLite();
+    tl.to(PONG.vars, 1, { rotationX: 120 }).to(PONG.vars, 1, { rotationX: 110, rotationZ: -90, onComplete: callback });
+  },
+  goToFront: function () {
+    var tl2 = new TimelineLite();
+    tl2.to(PONG.vars, 0.5, { rotationX: 120, rotationZ: 0}).to(PONG.vars, 0.5, { rotationX: 180 });
+  }  
+};
 

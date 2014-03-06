@@ -128,17 +128,9 @@ PONG.WebGL3DRenderer = function() {
         
         var entities;
         
-        PONG.vars = {
-            rotationX: -180,
-            rotationY: 0,
-            rotationZ: 0,
-            translX: 0,
-            translY: 0,
-            translZ: -493,
-            fieldOfViewRadians: 70
-        };
+
         
-        var gui = new dat.GUI();
+        /*var gui = new dat.GUI();
         var f1 = gui.addFolder('Rotations');
         f1.add(PONG.vars, "rotationX").min(-180).max(180);
         f1.add(PONG.vars, "rotationY").min(-180).max(180);
@@ -151,7 +143,7 @@ PONG.WebGL3DRenderer = function() {
         gui.add(PONG.vars, "fieldOfViewRadians").min(1).max(179);
         
         f1.open();
-        f2.open();
+        f2.open();*/
         
         stage = document.createElement("canvas");
         stage.setAttribute("width", window.innerWidth + "px");
