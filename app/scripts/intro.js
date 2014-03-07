@@ -33,6 +33,8 @@ var PONG = {
     categories: {
         BACKGROUND: "BACKGROUND",
         GAME_ENTITIES: "GAME_ENTITIES",
+        PLAYER1_POINTS: "PLAYER1_POINTS",
+        PLAYER2_POINTS: "PLAYER2_POINTS",
         INTRO: "INTRO",
         OUTRO: "OUTRO"
     },

@@ -63,10 +63,21 @@ PONG.GameScreen = function(game) {
       }
   };
   this.run = function () {
-      var bg = PONG.EntityCollection.pull( PONG.categories.BACKGROUND ),
-          gameEntities = PONG.EntityCollection.pull( PONG.categories.GAME_ENTITIES );
-      PONG.displayList = bg.concat(gameEntities);
+      var dislayListTemp = [],
+          bg = PONG.EntityCollection.pull( PONG.categories.BACKGROUND ),
+          gameEntities = PONG.EntityCollection.pull( PONG.categories.GAME_ENTITIES ),
+          gamePoints1 = PONG.EntityCollection.pull( PONG.categories.PLAYER1_POINTS ),
+          gamePoints2 = PONG.EntityCollection.pull( PONG.categories.PLAYER2_POINTS );
+      
+      
+      
+      dislayListTemp = bg;
+      dislayListTemp = dislayListTemp.concat(gameEntities);
+      dislayListTemp = dislayListTemp.concat(gamePoints1);
+      dislayListTemp = dislayListTemp.concat(gamePoints2);
+      PONG.displayList = dislayListTemp;
       PONG.currentScreen = PONG.screens.GAME_SCREEN;
+      
   };
 };
 
@@ -213,7 +224,7 @@ PONG.main = function (){
             
             if(PONG.currentScreen == PONG.screens.GAME_SCREEN){
                 updateGame();
-            }
+            } 
             stats.end();
             requestAnimationFrame(onEnterFrame);
         },
@@ -232,6 +243,25 @@ PONG.main = function (){
        
         printScore = function(){
             PONG.instruction.display(score.player1+" - "+score.player2);
+            
+            if(score.player1 != 0){
+                PONG.EntityCollection.pull( PONG.categories.PLAYER1_POINTS )[score.player1 - 1].rgba = {
+                    r:255,
+                    g:255,
+                    b:255,
+                    a:255
+                };
+            }
+            
+            if(score.player2 != 0){
+                PONG.EntityCollection.pull( PONG.categories.PLAYER2_POINTS )[score.player2 - 1].rgba = {
+                    r:255,
+                    g:255,
+                    b:255,
+                    a:255
+                };
+            }
+            
         },
         
         updateScore = function(){
@@ -281,17 +311,32 @@ PONG.main = function (){
             scene = new PONG.Scene();
             
             PONG.EntityCollection.push(scene, PONG.categories.BACKGROUND);
-            //PONG.EntityCollection.push(bottomBound, PONG.categories.BACKGROUND);
-            //PONG.EntityCollection.push(topBound, PONG.categories.BACKGROUND);
+            PONG.EntityCollection.push(bottomBound, PONG.categories.BACKGROUND);
+            PONG.EntityCollection.push(topBound, PONG.categories.BACKGROUND);
             
             ball = new PONG.Ball();
             player1 = new PONG.Paddle();
             player1.direction = 0;
             player2 = new PONG.Paddle();
             
+            
+            
             PONG.EntityCollection.push(ball, PONG.categories.GAME_ENTITIES);
             PONG.EntityCollection.push(player1, PONG.categories.GAME_ENTITIES);
             PONG.EntityCollection.push(player2, PONG.categories.GAME_ENTITIES);
+            
+            for(var i=0,j=3; i<j; i++){
+              var point = new PONG.Point(0, 13 + i*7, 33);
+              point.rgba = {r:0, g:0, b:0, a:0};
+              PONG.EntityCollection.push(point, PONG.categories.PLAYER1_POINTS);
+            };
+            
+            for(var i=0,j=3; i<j; i++){
+              var point = new PONG.Point(0 , 200 - (13+7* i) +13, 33);
+              point.rgba = {r:0, g:0, b:0, a:0};
+              PONG.EntityCollection.push(point, PONG.categories.PLAYER2_POINTS);
+            };
+            
             
             TOP_COLLISION_LINE = topBound.height;
             BOTTOM_COLLISION_LINE = PONG.stageHeight - bottomBound.height;

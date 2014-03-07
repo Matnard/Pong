@@ -186,7 +186,6 @@ PONG.WebGL3DRenderer = function() {
         
         
         entities = PONG.EntityCollection.pull();
-        
         for(var i=0,j=entities.length; i<j; i++){
           initEntityBuffer(entities[i]);
         };
@@ -344,7 +343,6 @@ PONG.WebGL3DRenderer = function() {
     },
     
     drawEntities = function (entitiesArray){
-
         for(var i=0,j=entitiesArray.length; i<j; i++){
           var buffer,
               transformMatrix,
@@ -359,7 +357,12 @@ PONG.WebGL3DRenderer = function() {
               scaleMatrix,
               projectionMatrix;
           
-          buffer = entitiesArray[i].buffer;         
+          
+              buffer = entitiesArray[i].buffer;         
+
+          
+          
+          
           gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
 
           gl.enableVertexAttribArray(positionLocation);

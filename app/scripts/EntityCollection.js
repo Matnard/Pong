@@ -15,6 +15,14 @@ PONG.EntityCollection = function () {
       }
   },
   
+  flush = function(category) {
+      if(category === undefined){
+          return;
+      } else {
+          return categories[category] = [];
+      }
+  },
+  
   pull = function (category) {
       if(category === undefined){
           var arr = [];
@@ -32,7 +40,8 @@ PONG.EntityCollection = function () {
   
   return{
       push: push,
-      pull: pull
+      pull: pull,
+      flush: flush
   };
   
 }();

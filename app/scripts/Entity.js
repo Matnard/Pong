@@ -179,3 +179,12 @@ Object.defineProperty(PONG.Entity.prototype, 'rgba', {
         this._rgba = value;
     }
 });
+
+Object.defineProperty(PONG.Entity.prototype, 'alpha', {
+    get: function() {
+        return this._rgba.a / 255;
+    },
+    set: function(value) {
+        this._rgba.a = value * 255;
+    }
+});
