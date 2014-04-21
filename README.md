@@ -14,6 +14,4 @@ Press enter to start use W and S to move the paddle
 - [x] Apply translations in webGL with 3x3 2D matrices
 - [x] Add third dimension to squares in the API to create cubes
 - [x] Render in webGL in 3D with 4x4 matrices
-- [ ] Implement a camera
-- [ ] Implement a light
-- [ ] Implement a bitmap font for instructions and points
+- [x] Implement a camera
