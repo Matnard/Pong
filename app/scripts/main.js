@@ -33,8 +33,6 @@ PONG.IntroScreen = function(game) {
   this.run = function () {
       PONG.currentScreen = PONG.screens.INTRO_SCREEN; 
       PONG.displayList = PONG.EntityCollection.pull( PONG.categories.BACKGROUND ).concat(that.foregroundList);
-      //change z index
-      //PONG.displayList = that.foregroundList.concat( PONG.EntityCollection.pull( PONG.categories.BACKGROUND ) );
   };
 };
 
@@ -437,7 +435,6 @@ PONG.main = function (){
             game.start();
             
             requestAnimationFrame(onEnterFrame);
-            //setInterval( onEnterFrame, 1000 / 60 );
         };
         
     document.addEventListener('DOMContentLoaded', function(){
