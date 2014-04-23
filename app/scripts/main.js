@@ -1,18 +1,3 @@
-PONG.instruction = function () {
-    var info = document.getElementById('info'),
-    
-    display = function(message){
-        console.log(message);
-        //alert(message);
-        //info.innerHTML = message;
-    };
-    
-    return {
-        display: display
-    };
-}();
-
-
 PONG.Game = function () {
   var currentScreen = new PONG.IntroScreen(this);  
   
@@ -46,7 +31,6 @@ PONG.IntroScreen = function(game) {
   };
    
   this.run = function () {
-      PONG.instruction.display("press ENTER to play. Use A and D to move.");
       PONG.currentScreen = PONG.screens.INTRO_SCREEN; 
       PONG.displayList = PONG.EntityCollection.pull( PONG.categories.BACKGROUND ).concat(that.foregroundList);
       //change z index
@@ -94,7 +78,6 @@ PONG.GameOverScreen = function(game) {
   };
   this.run = function () {
       PONG.animation.goToFront();
-      PONG.instruction.display("press ENTER to play.");
       PONG.currentScreen = PONG.screens.GAME_OVER_SCREEN;
       PONG.displayList = PONG.EntityCollection.pull( PONG.categories.BACKGROUND ).concat(that.foregroundList);
   };
@@ -112,11 +95,17 @@ PONG.main = function (){
         player1,
         player2,
         introEntity,
+        instruction,
+        pressEnter,
         outroEntity,
         
         score = {
             player1: 0,
-            player2: 0
+            player2: 0,
+            reset: function() {
+                this.player1 = 0;
+                this.player2 = 0;
+            }
         },
         
         LEFT_SIDE = "LEFT_SIDE",
@@ -128,7 +117,11 @@ PONG.main = function (){
         BOTTOM_COLLISION_LINE,
         LEFT_COLLISION_LINE,
         RIGHT_COLLISION_LINE,
-        MIDDLE_Y_POSITION;
+        MIDDLE_Y_POSITION,
+        
+        introSnd, pointSnd, gameoverSnd, touchSnd;
+    
+    
     
     var playerYCheck = function(){
                 
@@ -164,13 +157,13 @@ PONG.main = function (){
             if(ball.x <= LEFT_COLLISION_LINE){ 
                 ball.x = LEFT_COLLISION_LINE; 
                 ball.speed.x *= -1; 
-            //touchSnd.play();
+                touchSnd.play();
             } 
             
             else if(ball.x >= RIGHT_COLLISION_LINE-ball.width){ 
                 ball.x = RIGHT_COLLISION_LINE-ball.width; 
                 ball.speed.x *= -1; 
-            //touchSnd.play();
+                touchSnd.play();
             }
         },
     
@@ -219,13 +212,11 @@ PONG.main = function (){
         },
     
         onEnterFrame = function() {     
-            stats.begin();
             PONG.renderer.render();
             
             if(PONG.currentScreen == PONG.screens.GAME_SCREEN){
                 updateGame();
             } 
-            stats.end();
             requestAnimationFrame(onEnterFrame);
         },
         
@@ -234,6 +225,8 @@ PONG.main = function (){
         },
        
         die = function () {
+            gameoverSnd.play();
+            resetScore();
             game.trigger(PONG.event.DIE);
         }, 
        
@@ -242,7 +235,6 @@ PONG.main = function (){
         },
        
         printScore = function(){
-            PONG.instruction.display(score.player1+" - "+score.player2);
             
             if(score.player1 != 0){
                 PONG.EntityCollection.pull( PONG.categories.PLAYER1_POINTS )[score.player1 - 1].rgba = {
@@ -266,6 +258,7 @@ PONG.main = function (){
         
         updateScore = function(){
             printScore();
+            pointSnd.play();
             if(score.player1 == 3 || score.player2 == 3)
                 die();
         },
@@ -273,6 +266,29 @@ PONG.main = function (){
         resetScore = function(){
             score.player1 = 0;
             score.player2 = 0;
+            
+            (function(){
+                var playerPoints = PONG.EntityCollection.pull( PONG.categories.PLAYER1_POINTS );
+                for(var i=0,j=playerPoints.length; i<j; i++){
+                  playerPoints[i].rgba = {
+                        r:0,
+                        g:0,
+                        b:0,
+                        a:0
+                    };
+                };
+                
+                playerPoints = PONG.EntityCollection.pull( PONG.categories.PLAYER2_POINTS );
+                for(var i=0,j=playerPoints.length; i<j; i++){
+                  playerPoints[i].rgba = {
+                        r:0,
+                        g:0,
+                        b:0,
+                        a:0
+                    };
+                };
+            })();
+            
             updateScore();
         },
         
@@ -280,6 +296,13 @@ PONG.main = function (){
             introEntity.x = 140;
             introEntity.y = 150;
             
+            instruction.x = 159;
+            instruction.y = 240;
+            
+            pressEnter.x = 159;
+            pressEnter.y = 272;
+            
+            score.reset();
             
             player1.x = 0;
             player1.y = MIDDLE_Y_POSITION;
@@ -300,11 +323,32 @@ PONG.main = function (){
         
         init = function () {
             
+            introSnd = new Audio('http://www.mathieu-mence.name/misc/pong/intro.wav');
+            pointSnd = new Audio('http://www.mathieu-mence.name/misc/pong/point.wav');
+            touchSnd = new Audio('http://www.mathieu-mence.name/misc/pong/touch.wav');    
+            gameoverSnd = new Audio('http://www.mathieu-mence.name/misc/pong/gameover.wav');
+            
+            introSnd.play();
+            
             introEntity = new PONG.IntroTitle();
+            instruction = new PONG.Instruction();
+            pressEnter = new PONG.PressEnter();
+            
+            for(var i=0,j=instruction.graphics.length; i<j; i++){
+              instruction.graphics[i].depth = 0;
+            };
+            
+            for(var i=0,j=pressEnter.graphics.length; i<j; i++){
+              pressEnter.graphics[i].depth = 0;
+            };
+            
             PONG.EntityCollection.push(introEntity, PONG.categories.INTRO);
+            PONG.EntityCollection.push(instruction, PONG.categories.INTRO);
+            PONG.EntityCollection.push(pressEnter, PONG.categories.INTRO);
             
             outroEntity = new PONG.OutroTitle();
             PONG.EntityCollection.push(outroEntity, PONG.categories.OUTRO);
+            PONG.EntityCollection.push(pressEnter, PONG.categories.OUTRO);
             
             topBound = new PONG.Bound();
             bottomBound = new PONG.Bound();
@@ -349,7 +393,6 @@ PONG.main = function (){
                 e = e || window.event;
                 var charCode = (typeof e.which == "number") ? e.which : e.keyCode;
                 if (charCode) {
-                    console.log(charCode);  
                     switch(charCode){
                         case 13: {
                             if(PONG.currentScreen == PONG.screens.INTRO_SCREEN) start(); 
